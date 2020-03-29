@@ -1,6 +1,6 @@
 {
   "name": "@crypticat/cli",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Crypticat's command-line interface",
   "author": "Kognise <felix.mattick@gmail.com>",
   "homepage": "",
