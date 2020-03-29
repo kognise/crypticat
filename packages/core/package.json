@@ -21,10 +21,12 @@
     "tsc": "tsc -p tsconfig.build.json"
   },
   "dependencies": {
+    "typescript": "^3.8.3",
     "uid-promise": "^1.1.0",
     "ws": "^7.2.3"
   },
   "devDependencies": {
+    "@types/node": "^13.9.5",
     "@types/ws": "^7.2.3",
     "typescript": "^3.8.3"
   },

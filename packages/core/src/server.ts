@@ -104,7 +104,10 @@ class CrypticatServer extends EventEmitter {
             this.emit('join', uid, payload.name)
 
             if (room) {
+              console.log(`leaving room ${room}`)
               await leaveRoom()
+            } else {
+              console.log(`no ${room} to leave`)
             }
 
             const existingRoom = this.rooms.find(({ name }) => name === payload.name)

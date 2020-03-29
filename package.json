@@ -1,12 +1,7 @@
 {
-  "name": "root",
+  "name": "crypticat",
   "private": true,
   "workspaces": [
     "packages/*"
-  ],
-  "devDependencies": {
-    "@types/node": "^13.9.5",
-    "lerna": "^3.20.2",
-    "typescript": "^3.8.3"
-  }
+  ]
 }
