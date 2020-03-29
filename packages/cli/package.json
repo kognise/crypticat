@@ -1,0 +1,29 @@
+{
+  "name": "@crypticat/cli",
+  "version": "0.0.1",
+  "description": "Crypticat's command-line interface",
+  "author": "Kognise <felix.mattick@gmail.com>",
+  "homepage": "",
+  "license": "MIT",
+  "main": "lib/core.js",
+  "typings": "lib/core.d.ts",
+  "bin": {
+    "crypticat": "./bin.js"
+  },
+  "directories": {
+    "lib": "lib"
+  },
+  "files": [
+    "lib"
+  ],
+  "scripts": {
+    "tsc": "tsc -p tsconfig.build.json"
+  },
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "readline-promise": "^1.0.4"
+  },
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  }
+}
