@@ -43,6 +43,7 @@ class CrypticatServer extends EventEmitter {
       })
     }
 
+    assertDefined(this.wss)
     this.wss.on('connection', async (ws) => {
       const uid = await createUid(20)
       this.sockets[uid] = ws

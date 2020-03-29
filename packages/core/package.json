@@ -22,7 +22,6 @@
     "watch": "tsc --watch"
   },
   "dependencies": {
-    "typescript": "^3.8.3",
     "uid-promise": "^1.1.0",
     "ws": "^7.2.3"
   },
@@ -30,6 +29,5 @@
     "@types/node": "^13.9.5",
     "@types/ws": "^7.2.3",
     "typescript": "^3.8.3"
-  },
-  "gitHead": "611a587b42e6320bcfa7afca71062b24d9d46994"
+  }
 }

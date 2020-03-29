@@ -37,6 +37,5 @@
     "fs-extra": "^9.0.0",
     "isomorphic-unfetch": "^3.0.0",
     "typescript": "^3.8.3"
-  },
-  "gitHead": "611a587b42e6320bcfa7afca71062b24d9d46994"
+  }
 }
