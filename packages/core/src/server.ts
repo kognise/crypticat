@@ -3,6 +3,8 @@ import crypto from 'crypto'
 import createUid from 'uid-promise'
 import { waitFor, assertDefined } from './lib'
 import { EventEmitter } from 'events'
+import { Server as HttpServer } from 'http'
+import { Server as HttpsServer } from 'https'
 
 interface KeyPayload {
   key: string
@@ -28,8 +30,18 @@ class CrypticatServer extends EventEmitter {
 
   constructor() { super() }
 
-  listen(port: number) {
-    this.wss = new WebSocket.Server({ port })
+  listen(location: HttpServer | HttpsServer | number, path?: string) {
+    if (location instanceof HttpServer || location instanceof HttpsServer) {
+      this.wss = new WebSocket.Server({
+        server: location,
+        path
+      })
+    } else if (typeof location === 'number') {
+      this.wss = new WebSocket.Server({
+        port: location,
+        path
+      })
+    }
 
     this.wss.on('connection', async (ws) => {
       const uid = await createUid(20)
@@ -104,10 +116,7 @@ class CrypticatServer extends EventEmitter {
             this.emit('join', uid, payload.name)
 
             if (room) {
-              console.log(`leaving room ${room}`)
               await leaveRoom()
-            } else {
-              console.log(`no ${room} to leave`)
             }
 
             const existingRoom = this.rooms.find(({ name }) => name === payload.name)

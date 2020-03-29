@@ -8,4 +8,8 @@ server.on('disconnect', (uid) => console.log(`${chalk.gray(uid.slice(0, 6))} dis
 server.on('join', (uid, room) => console.log(`${chalk.gray(uid.slice(0, 6))} joined ${chalk.cyan(`#${room}`)}`))
 server.on('dispatch', (from, to) => console.log(`${from.slice(0, 6)} ${chalk.gray('->')} ${to.slice(0, 6)}`))
 
-server.listen(8080)
+export const go = (port: number) => {
+  console.log(chalk.green(`Started server on port ${port}`))
+  console.log(`Connect with \`${chalk.cyan(`crypticat ws://localhost:${port}`)}\``)
+  server.listen(8080)
+}

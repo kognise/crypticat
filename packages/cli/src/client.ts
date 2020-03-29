@@ -4,6 +4,9 @@ import { CrypticatClient } from '@crypticat/core'
 import readline from 'readline-promise'
 import { cursorTo, clearLine } from 'readline'
 import chalk from 'chalk'
+import Conf from 'conf'
+
+const config = new Conf()
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -54,9 +57,17 @@ export const go = async (address: string) => {
   }
 
   print(chalk.green('Connection established!'))
+
+  print('')
   await joinRoom('lobby')
 
-  let nick = 'unknown'
+  let nick = config.get('nickname', null)
+  if (nick) {
+    print(`Your nickname is currently ${chalk.cyan(nick)}`)
+  } else {
+    print(`Please set a nickname with \`${chalk.cyan('/nick <nickname>')}\``)
+  }
+
   while (true) {
     const message = await input()
 
@@ -76,6 +87,7 @@ export const go = async (address: string) => {
             break
           }
 
+          print('')
           const room = args[0].startsWith('#') ? args[0].slice(1) : args[0]
           await joinRoom(room)
           break
@@ -83,11 +95,15 @@ export const go = async (address: string) => {
 
         case 'nick': {
           if (!args[0]) {
-            nick = 'unknown'
+            nick = null
+            config.delete('nickname')
+            print(chalk.green('Reset nickname'))
             break
           }
 
           nick = args.join(' ')
+          config.set('nickname', nick)
+          print(chalk.green(`Updated nickname to ${nick}`))
           break
         }
       }
@@ -95,6 +111,6 @@ export const go = async (address: string) => {
       continue
     }
 
-    client.sendMessage(nick, message)
+    client.sendMessage(nick ?? 'unnicked', message)
   }
 }
