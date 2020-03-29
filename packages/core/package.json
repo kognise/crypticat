@@ -1,12 +1,13 @@
 {
   "name": "@crypticat/core",
-  "version": "0.1.1",
+  "version": "0.0.1",
   "description": "Crypticat's core client and server implementation",
   "author": "Kognise <felix.mattick@gmail.com>",
   "homepage": "",
   "license": "MIT",
   "main": "lib/core.js",
   "typings": "lib/core.d.ts",
+  "private": false,
   "directories": {
     "lib": "lib"
   },
@@ -23,5 +24,6 @@
   "devDependencies": {
     "@types/ws": "^7.2.3",
     "typescript": "^3.8.3"
-  }
+  },
+  "gitHead": "b0a3303c505e4323e8054324564ccf1cb6eed495"
 }

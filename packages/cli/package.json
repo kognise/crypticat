@@ -1,12 +1,13 @@
 {
   "name": "@crypticat/cli",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Crypticat's command-line interface",
   "author": "Kognise <felix.mattick@gmail.com>",
   "homepage": "",
   "license": "MIT",
   "main": "lib/core.js",
   "typings": "lib/core.d.ts",
+  "private": false,
   "bin": {
     "crypticat": "./bin.js"
   },
