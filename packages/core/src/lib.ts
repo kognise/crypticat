@@ -1,5 +1,5 @@
 import { AssertionError } from 'assert'
-import WebSocket from 'universal-websocket-client'
+import WebSocket from 'isomorphic-ws'
 
 export const waitFor = <T>(ws: WebSocket, wantedAction: string) => new Promise<T>((resolve) => {
   const listener = (message: string) => {

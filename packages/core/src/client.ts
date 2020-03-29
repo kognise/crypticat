@@ -1,4 +1,4 @@
-import WebSocket from 'universal-websocket-client'
+import WebSocket from 'isomorphic-ws'
 import crypto, { DiffieHellman, Cipher, Decipher } from 'crypto'
 import { waitFor, assertDefined } from './lib'
 import { EventEmitter } from 'events'

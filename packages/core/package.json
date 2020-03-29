@@ -22,13 +22,11 @@
     "watch": "tsc --watch"
   },
   "dependencies": {
-    "uid-promise": "^1.1.0",
-    "universal-websocket-client": "^1.0.2",
-    "ws": "^7.2.3"
+    "isomorphic-ws": "^4.0.1",
+    "uid-promise": "^1.1.0"
   },
   "devDependencies": {
     "@types/node": "^13.9.5",
-    "@types/ws": "^7.2.3",
     "typescript": "^3.8.3"
   }
 }

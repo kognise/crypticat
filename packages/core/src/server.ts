@@ -1,4 +1,4 @@
-import WebSocket from 'ws'
+import WebSocket from 'isomorphic-ws'
 import crypto from 'crypto'
 import createUid from 'uid-promise'
 import { waitFor, assertDefined } from './lib'
