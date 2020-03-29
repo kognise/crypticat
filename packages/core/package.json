@@ -8,6 +8,9 @@
   "main": "lib/core.js",
   "typings": "lib/core.d.ts",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "directories": {
     "lib": "lib"
   },
@@ -25,5 +28,5 @@
     "@types/ws": "^7.2.3",
     "typescript": "^3.8.3"
   },
-  "gitHead": "b0a3303c505e4323e8054324564ccf1cb6eed495"
+  "gitHead": "a65529aa165bea194edcbb60332af8c121cd7473"
 }

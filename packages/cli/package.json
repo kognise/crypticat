@@ -8,6 +8,9 @@
   "main": "lib/core.js",
   "typings": "lib/core.d.ts",
   "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "crypticat": "./bin.js"
   },
@@ -26,5 +29,6 @@
   },
   "devDependencies": {
     "typescript": "^3.8.3"
-  }
+  },
+  "gitHead": "a65529aa165bea194edcbb60332af8c121cd7473"
 }
