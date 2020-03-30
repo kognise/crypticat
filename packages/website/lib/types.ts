@@ -8,7 +8,7 @@ export interface FlexProps {
   align?: 'center' | 'flex-start' | 'flex-end'
   justify?: 'center' | 'flex-start' | 'flex-end'
   flex?: boolean
-  expand?: number | boolean
+  expand?: number | boolean | string
 }
 
 export interface MarginProps {

@@ -7,12 +7,13 @@ type Props = PropsWithChildren<{
   background?: Background
   fullHeight?: boolean
   fullWidth?: boolean
+  scrollfix?: boolean
 } & FlexProps & SpaceProps>
 
 export default ({
   $ = 'div', children, background,
   direction, align, expand, justify, flex,
-  fullHeight, fullWidth,
+  fullHeight, fullWidth, scrollfix,
   m, mx, my, ml, mr, mt, mb,
   p, px, py, pl, pr, pt, pb
 }: Props) => (
@@ -20,13 +21,14 @@ export default ({
       {children}
 
       <style jsx>{`
-      ${$} {
-        ${getFlexStyles({ direction, align, expand, justify, flex })}
-        ${getSpaceStyles({ m, mx, my, ml, mr, mt, mb, p, px, py, pl, pr, pt, pb })}
-        background-color: ${background ? `var(--background-${background})` : 'transparent'};
-        ${fullHeight ? 'height: 100%;' : ''}
-        ${fullWidth ? 'width: 100%;' : ''}
-      }
-    `}</style>
+        ${$} {
+          ${getFlexStyles({ direction, align, expand, justify, flex })}
+          ${getSpaceStyles({ m, mx, my, ml, mr, mt, mb, p, px, py, pl, pr, pt, pb })}
+          background-color: ${background ? `var(--background-${background})` : 'transparent'};
+          ${fullHeight ? 'height: 100%;' : ''}
+          ${fullWidth ? 'width: 100%;' : ''}
+          ${scrollfix ? 'overflow: scroll;' : ''}
+        }
+      `}</style>
     </$>
   )

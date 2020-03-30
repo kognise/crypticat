@@ -74,11 +74,11 @@ export default ({ Component, pageProps }: AppProps) => {
           opacity: 0;
           transition: opacity 200ms ease-in;
         }
-        
+
         .ReactModal__Overlay--after-open{
           opacity: 1;
         }
-        
+
         .ReactModal__Overlay--before-close{
           opacity: 0;
         }

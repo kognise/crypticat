@@ -4,7 +4,7 @@ export const getFlexStyles = (props: FlexProps) => {
   const lines = []
 
   if (props.expand) {
-    if (typeof props.expand === 'number') {
+    if (typeof props.expand === 'number' || typeof props.expand === 'string') {
       lines.push(`flex: ${props.expand};`)
     } else {
       lines.push('flex: 1;')

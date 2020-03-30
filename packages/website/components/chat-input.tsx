@@ -12,10 +12,11 @@ export default ({ onSend, room }: Props) => {
   return (
     <form onSubmit={(event) => {
       event.preventDefault()
-      onSend(content)
+      if (!content.trim()) return
+      onSend(content.trim())
       setContent('')
     }}>
-      <input type='text' onChange={(event) => setContent(event.target.value)} value={content} placeholder={`Send a message in #${room}`} />
+      <input type='text' autoFocus onChange={(event) => setContent(event.target.value)} value={content} placeholder={`Send a message in #${room}`} />
       <style jsx>{`
         input {
           ${getSpaceStyles({ px: 24, py: 28 })}

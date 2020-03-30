@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { CrypticatClient } from '@crypticat/core'
 import createUid from 'uid-promise'
 
@@ -16,7 +16,7 @@ import NickModal from '../modals/nick'
 import RoomModal from '../modals/room'
 
 export default () => {
-  const [address, setAddress] = useState('ws://localhost:8080')
+  const [address, setAddress] = useState('wss://2b70a277.ngrok.io')
   const [client, setClient] = useState<CrypticatClient | null>(null)
   const [connecting, setConnecting] = useState(false)
 
@@ -27,6 +27,8 @@ export default () => {
   const [showNickModal, setShowNickModal] = useState(false)
   const [showRoomModal, setShowRoomModal] = useState(false)
 
+  const scrollBottomRef = useRef<HTMLDivElement>(null)
+
   useEffect(() => {
     if (!client) return
     setRoom('lobby')
@@ -34,6 +36,7 @@ export default () => {
     client.on('message', async (from, content) => {
       const mid = await createUid(8)
       setMessages((messages) => messages.concat([{ from, content, mid }]))
+      scrollBottomRef.current?.scrollIntoView()
     })
 
     client.on('disconnect', () => setClient(null))
@@ -41,10 +44,11 @@ export default () => {
     return () => { client.removeAllListeners() }
   }, [client])
 
-  const joinRoom = async (newRoom: string, client?: CrypticatClient = client) => {
-    if (!client) return setRoom('lobby')
+  const joinRoom = async (newRoom: string, thisClient: CrypticatClient | null = client) => {
+    setMessages([])
+    if (!thisClient) return setRoom('lobby')
     if (newRoom.startsWith('#')) newRoom = newRoom.slice(1)
-    await client.joinRoom(newRoom)
+    await thisClient.joinRoom(newRoom)
     setRoom(newRoom)
   }
 
@@ -99,7 +103,7 @@ export default () => {
       <RoomModal
         show={showRoomModal}
         close={() => setShowRoomModal(false)}
-        setRoom={setRoom}
+        setRoom={joinRoom}
       />
 
       <Box $='header' flex background='header' align='center' px={24}>
@@ -119,8 +123,8 @@ export default () => {
         </Box>
       </Box>
 
-      <Box $='main' flex direction='column' expand background='chat' justify='flex-end' px={24} py={16}>
-        <Box mb={54}>
+      <Box $='main' flex direction='column' expand background='chat' px={24} py={16} scrollfix>
+        <Box mb={54} expand='1 1 auto' flex justify='flex-end' direction='column'>
           <Text size='lg' weight={700} color='heading-primary' mb={16} noInteraction>
             Welcome to #{room}
           </Text>
@@ -136,6 +140,8 @@ export default () => {
             <Text color='text-normal'>{content}</Text>
           </Box>
         ))}
+
+        <div aria-hidden ref={scrollBottomRef} />
       </Box>
 
       <ChatInput room={room} onSend={async (content) => {
@@ -145,6 +151,7 @@ export default () => {
           content,
           mid: await createUid(8)
         }]))
+        scrollBottomRef.current?.scrollIntoView()
       }} />
     </Box>
   )
