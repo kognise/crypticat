@@ -3,7 +3,9 @@ import { ElementName, FontSize, Color, MarginProps } from '../lib/types'
 import { getSpaceStyles } from '../lib/stylegen'
 
 type Props = PropsWithChildren<{
-  $?: ElementName, size?: FontSize | number, color?: Color
+  $?: ElementName
+  size?: FontSize | number
+  color?: Color
   weight?: 400 | 500 | 700
   centered?: boolean
   noInteraction?: boolean

@@ -2,8 +2,8 @@ import { useState, useEffect, useRef } from 'react'
 import { CrypticatClient } from '@crypticat/core'
 import createUid from 'uid-promise'
 
-import AtIcon from '@crypticat/ionicons/lib/at-outline'
-import EnterIcon from '@crypticat/ionicons/lib/enter-outline'
+import NickIcon from '@crypticat/ionicons/lib/at-outline'
+import RoomIcon from '@crypticat/ionicons/lib/chatbubbles-outline'
 
 import Box from '../components/box'
 import Text from '../components/text'
@@ -15,6 +15,16 @@ import IconButton from '../components/icon-button'
 import NickModal from '../modals/nick'
 import RoomModal from '../modals/room'
 
+interface MessageGroup {
+  from: string
+  uid: string
+  you: boolean
+  messages: {
+    content: string
+    uid: string
+  }[]
+}
+
 export default () => {
   const [address, setAddress] = useState('wss://2b70a277.ngrok.io')
   const [client, setClient] = useState<CrypticatClient | null>(null)
@@ -22,35 +32,59 @@ export default () => {
 
   const [nick, setNick] = useState<string | null>(null)
   const [room, setRoom] = useState('lobby')
-  const [messages, setMessages] = useState<{ from: string, content: string, mid: string }[]>([])
+  const [messageGroups, setMessageGroups] = useState<MessageGroup[]>([])
 
   const [showNickModal, setShowNickModal] = useState(false)
   const [showRoomModal, setShowRoomModal] = useState(false)
 
   const scrollBottomRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    if (!client) return
-    setRoom('lobby')
-
-    client.on('message', async (from, content) => {
-      const mid = await createUid(8)
-      setMessages((messages) => messages.concat([{ from, content, mid }]))
-      scrollBottomRef.current?.scrollIntoView()
-    })
-
-    client.on('disconnect', () => setClient(null))
-
-    return () => { client.removeAllListeners() }
-  }, [client])
-
   const joinRoom = async (newRoom: string, thisClient: CrypticatClient | null = client) => {
-    setMessages([])
+    setMessageGroups([])
     if (!thisClient) return setRoom('lobby')
     if (newRoom.startsWith('#')) newRoom = newRoom.slice(1)
     await thisClient.joinRoom(newRoom)
     setRoom(newRoom)
   }
+
+  const addMessage = async (from: string, content: string, you: boolean) => {
+    const uid = await createUid(8)
+
+    setMessageGroups((messageGroups) => {
+      if (messageGroups[messageGroups.length - 1]?.from === from) {
+        return messageGroups.slice(0, -1).concat([
+          {
+            ...messageGroups[messageGroups.length - 1],
+            messages: messageGroups[messageGroups.length - 1].messages.concat([
+              { content, uid }
+            ])
+          }
+        ])
+      } else {
+        return messageGroups.concat([
+          {
+            from, you,
+            messages: [{ content, uid }],
+            uid
+          }
+        ])
+      }
+    })
+
+    scrollBottomRef.current?.scrollIntoView()
+  }
+
+  useEffect(() => {
+    if (!client) return
+    setRoom('lobby')
+
+    client.on('message', async (from, content) => {
+      addMessage(from, content, false)
+    })
+
+    client.on('disconnect', () => setClient(null))
+    return () => { client.removeAllListeners() }
+  }, [client])
 
   if (!client) {
     return (
@@ -118,8 +152,8 @@ export default () => {
         </Box>
 
         <Box flex>
-          <IconButton icon={EnterIcon} onClick={() => setShowRoomModal(true)} mr={8} />
-          <IconButton icon={AtIcon} onClick={() => setShowNickModal(true)} />
+          <IconButton icon={NickIcon} onClick={() => setShowNickModal(true)} mr={8} />
+          <IconButton icon={RoomIcon} onClick={() => setShowRoomModal(true)} />
         </Box>
       </Box>
 
@@ -134,10 +168,12 @@ export default () => {
           </Text>
         </Box>
 
-        {messages.map(({ from, content, mid }) => (
-          <Box mb={16} key={mid}>
-            <Text weight={500} color='heading-primary' mb={6}>{from}</Text>
-            <Text color='text-normal'>{content}</Text>
+        {messageGroups.map(({ from, messages, uid, you }) => (
+          <Box mb={16} key={uid}>
+            <Text weight={500} color={you ? 'yellow' : 'blue'}>{from}</Text>
+            {messages.map(({ content, uid }) => (
+              <Text color='text-normal' mt={8} key={uid}>{content}</Text>
+            ))}
           </Box>
         ))}
 
@@ -146,12 +182,7 @@ export default () => {
 
       <ChatInput room={room} onSend={async (content) => {
         client.sendMessage(nick ?? 'unnicked', content)
-        setMessages(messages.concat([{
-          from: nick ?? 'unnicked',
-          content,
-          mid: await createUid(8)
-        }]))
-        scrollBottomRef.current?.scrollIntoView()
+        addMessage(nick ?? 'unnicked', content, true)
       }} />
     </Box>
   )

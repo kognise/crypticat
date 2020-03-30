@@ -35,6 +35,8 @@ export default ({ Component, pageProps }: AppProps) => {
 
           --ghost: rgba(255, 255, 255, 2%);
           --accent: #3F51B5;
+          --yellow: #FFE066;
+          --blue: #74C0FC;
         }
 
         body {
