@@ -1,3 +1,4 @@
+import Head from 'next/head'
 import { useState, useEffect, useRef } from 'react'
 import { CrypticatClient } from '@crypticat/core'
 import createUid from 'uid-promise'
@@ -33,6 +34,7 @@ export default () => {
   const [nick, setNick] = useState<string | null>(null)
   const [room, setRoom] = useState('lobby')
   const [messageGroups, setMessageGroups] = useState<MessageGroup[]>([])
+  const [missed, setMissed] = useState(0)
 
   const [showNickModal, setShowNickModal] = useState(false)
   const [showRoomModal, setShowRoomModal] = useState(false)
@@ -41,6 +43,7 @@ export default () => {
 
   const joinRoom = async (newRoom: string, thisClient: CrypticatClient | null = client) => {
     setMessageGroups([])
+    setMissed(0)
     if (!thisClient) return setRoom('lobby')
     if (newRoom.startsWith('#')) newRoom = newRoom.slice(1)
     await thisClient.joinRoom(newRoom)
@@ -72,6 +75,7 @@ export default () => {
     })
 
     scrollBottomRef.current?.scrollIntoView()
+    if (document.hidden) setMissed((missed) => missed + 1)
   }
 
   useEffect(() => {
@@ -86,9 +90,22 @@ export default () => {
     return () => { client.removeAllListeners() }
   }, [client])
 
+  useEffect(() => {
+    const listener = () => {
+      if (!document.hidden) setMissed(0)
+    }
+
+    document.addEventListener('visibilitychange', listener)
+    return () => document.removeEventListener('visibilitychange', listener)
+  })
+
   if (!client) {
     return (
       <Box flex direction='column' fullHeight>
+        <Head>
+          <title>crypticat</title>
+        </Head>
+
         <Box $='header' flex background='header' px={24} py={16}>
           <Text $='h1' weight={700} color='heading-primary' mr={8} noInteraction>
             crypticat
@@ -129,6 +146,10 @@ export default () => {
 
   return (
     <Box flex direction='column' fullHeight>
+      <Head>
+        <title>{missed ? `(${missed}) ` : ''}#{room}</title>
+      </Head>
+
       <NickModal
         show={showNickModal}
         close={() => setShowNickModal(false)}
