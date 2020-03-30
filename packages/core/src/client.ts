@@ -129,22 +129,6 @@ class CrypticatClient extends EventEmitter {
     this.ws.addEventListener('close', () => this.emit('disconnect'))
   }
 
-  sendEncrypted(dir: 'next' | 'prev', message: { action: string, payload: object }) {
-    this.assertWs(this.ws)
-
-    const link = this.linkState[dir]
-    assertDefined(link)
-
-    this.ws.send(JSON.stringify({
-      action: 'DISPATCH_ENCRYPTED',
-      payload: {
-        recipient: link.uid,
-        encryptedMessage: link.cipher.update(JSON.stringify(message)).toString('hex'),
-        dir
-      }
-    }))
-  }
-
   async joinRoom(name: string) {
     this.assertWs(this.ws)
     this.ws.send(JSON.stringify({
@@ -182,6 +166,22 @@ class CrypticatClient extends EventEmitter {
     if (ws === undefined || ws.readyState !== 1) {
       throw new AssertionError({ message: 'The websocket is not open!' })
     }
+  }
+
+  private sendEncrypted(dir: 'next' | 'prev', message: { action: string, payload: object }) {
+    this.assertWs(this.ws)
+
+    const link = this.linkState[dir]
+    assertDefined(link)
+
+    this.ws.send(JSON.stringify({
+      action: 'DISPATCH_ENCRYPTED',
+      payload: {
+        recipient: link.uid,
+        encryptedMessage: link.cipher.update(JSON.stringify(message)).toString('hex'),
+        dir
+      }
+    }))
   }
 }
 
