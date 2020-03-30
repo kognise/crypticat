@@ -14,7 +14,11 @@
     "@crypticat/ionicons": "^0.1.1",
     "next": "^9.3.2",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "react-modal": "^3.11.2",
+    "uid-promise": "^1.1.0"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/react-modal": "^3.10.5"
+  }
 }

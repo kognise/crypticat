@@ -306,6 +306,11 @@ input::-moz-focus-inner {
     padding: 0;
 }
 
+button, input {
+    padding: 0;
+    margin: 0;
+}
+
 /**
  * 1. Remove default vertical scrollbar in IE 6/7/8/9.
  * 2. Improve readability and alignment in all browsers.

@@ -2,23 +2,30 @@ import { PropsWithChildren } from 'react'
 import { MarginProps } from '../lib/types'
 import { getSpaceStyles } from '../lib/stylegen'
 
-type Props = PropsWithChildren<{ onClick?: () => void, disabled?: boolean } & MarginProps>
+type Props = PropsWithChildren<{
+  onClick?: () => void
+  disabled?: boolean
+  submit?: boolean
+  color?: 'accent' | 'ghost'
+} & MarginProps>
 
 export default ({
-  children, onClick, disabled,
-  m, mx, my, ml, mr, mt, mb
+  children, onClick, disabled, submit,
+  m, mx, my, ml, mr, mt, mb,
+  color = 'accent'
 }: Props) => (
-    <button onClick={onClick} disabled={disabled}>
+    <button type={submit ? 'submit' : 'button'} onClick={onClick} disabled={disabled}>
       {children}
 
       <style jsx>{`
         button {
           ${getSpaceStyles({ m, mx, my, ml, mr, mt, mb, px: 16 })}
           font-size: var(--font-md);
+          font-family: inherit;
 
           height: var(--field-height);
 
-          background-color: var(--accent);
+          background-color: var(--${color});
           border: 0;
           color: #FFFFFF;
           font-weight: 500;

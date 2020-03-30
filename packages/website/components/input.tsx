@@ -1,4 +1,3 @@
-import { PropsWithChildren } from 'react'
 import { MarginProps } from '../lib/types'
 import { getSpaceStyles } from '../lib/stylegen'
 
@@ -7,20 +6,23 @@ type Props = {
   value?: string
   type?: 'text' | 'email' | 'password'
   placeholder: string
+  autoFocus?: boolean
 } & MarginProps
 
 export default ({
   onChange, value, placeholder, type = 'text',
-  m, mx, my, ml, mr, mt, mb
+  m, mx, my, ml, mr, mt, mb,
+  autoFocus
 }: Props) => (<>
-  <input type={type} onChange={(event) => onChange && onChange(event.target.value)} value={value} placeholder={placeholder} />
+  <input autoFocus={autoFocus} type={type} onChange={(event) => onChange && onChange(event.target.value)} value={value} placeholder={placeholder} />
   <style jsx>{`
     input {
       ${getSpaceStyles({ m, mx, my, ml, mr, mt, mb, px: 16 })}
       font-size: var(--font-sm);
+      font-family: inherit;
 
       width: 100%;
-      max-width: 408px;
+      max-width: 440px;
       height: var(--field-height);
       line-height: var(--field-height);
 

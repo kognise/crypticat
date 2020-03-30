@@ -192,7 +192,7 @@ class CrypticatServer extends EventEmitter {
 
       ws.addEventListener('close', () => {
         this.emit('disconnect', uid)
-        leaveRoom()
+        if (room) leaveRoom()
       })
     })
   }
