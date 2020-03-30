@@ -2,16 +2,16 @@ import { AssertionError } from 'assert'
 import WebSocket from 'isomorphic-ws'
 
 export const waitFor = <T>(ws: WebSocket, wantedAction: string) => new Promise<T>((resolve) => {
-  const listener = (message: string) => {
-    const { action, payload } = JSON.parse(message)
+  const listener = (message: { data: string }) => {
+    const { action, payload } = JSON.parse(message.data)
 
     if (action === wantedAction) {
-      ws.off('message', listener)
+      ws.removeEventListener('message', listener)
       resolve(payload as T)
     }
   }
 
-  ws.on('message', listener)
+  ws.addEventListener('message', listener)
 })
 
 export function assertDefined<T>(thing: T): asserts thing is NonNullable<T> {

@@ -43,23 +43,23 @@ class CrypticatClient extends EventEmitter {
       const listeners = {
         error: (error: Error) => {
           assertDefined(this.ws)
-          this.ws.off('open', listeners.open)
+          this.ws.removeEventListener('open', listeners.open)
           reject(error)
         },
         open: () => {
           assertDefined(this.ws)
-          this.ws.off('open', listeners.error)
+          this.ws.removeEventListener('open', listeners.error)
           resolve()
         }
       }
 
-      this.ws.once('error', listeners.error)
-      this.ws.once('open', listeners.open)
+      this.ws.addEventListener('error', listeners.error)
+      this.ws.addEventListener('open', listeners.open)
     })
 
-    this.ws.on('message', (message: string) => {
+    this.ws.addEventListener('message', (message: { data: string }) => {
       assertDefined(this.ws)
-      const { action, payload } = JSON.parse(message)
+      const { action, payload } = JSON.parse(message.data)
 
       switch (action) {
         case 'GENERATE_KEY': {
@@ -126,7 +126,7 @@ class CrypticatClient extends EventEmitter {
       }
     })
 
-    this.ws.on('close', () => this.emit('disconnect'))
+    this.ws.addEventListener('close', () => this.emit('disconnect'))
   }
 
   sendEncrypted(dir: 'next' | 'prev', message: { action: string, payload: object }) {

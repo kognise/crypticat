@@ -109,8 +109,8 @@ class CrypticatServer extends EventEmitter {
         room = null
       }
 
-      ws.on('message', async (message: string) => {
-        const { action, payload } = JSON.parse(message)
+      ws.addEventListener('message', async (message: { data: string }) => {
+        const { action, payload } = JSON.parse(message.data)
 
         switch (action) {
           case 'JOIN_ROOM': {
@@ -190,7 +190,7 @@ class CrypticatServer extends EventEmitter {
         }
       })
 
-      ws.on('close', () => {
+      ws.addEventListener('close', () => {
         this.emit('disconnect', uid)
         leaveRoom()
       })
