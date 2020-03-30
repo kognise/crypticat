@@ -6,7 +6,7 @@ import { cursorTo, clearLine } from 'readline'
 import chalk from 'chalk'
 import Conf from 'conf'
 
-const config = new Conf()
+const config = new Conf({ projectName: 'crypticat' })
 
 const rl = readline.createInterface({
   input: process.stdin,
