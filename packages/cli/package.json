@@ -1,6 +1,6 @@
 {
   "name": "@crypticat/cli",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Crypticat's command-line interface",
   "author": "Kognise <felix.mattick@gmail.com>",
   "homepage": "",
@@ -18,14 +18,15 @@
     "lib": "lib"
   },
   "files": [
-    "lib"
+    "lib",
+    "bin.js"
   ],
   "scripts": {
     "tsc": "tsc -p tsconfig.build.json",
     "watch": "tsc --watch"
   },
   "dependencies": {
-    "@crypticat/core": "^0.1.9",
+    "@crypticat/core": "^0.1.10",
     "chalk": "^3.0.0",
     "conf": "^6.2.1",
     "readline-promise": "^1.0.4"
