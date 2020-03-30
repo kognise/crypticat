@@ -20,7 +20,8 @@
   "scripts": {
     "gen": "ts-node generate.ts",
     "tsc": "tsc -p tsconfig.build.json",
-    "watch": "tsc --watch"
+    "watch": "tsc --watch",
+    "preversion": "yarn tsc"
   },
   "dependencies": {
     "react": "^16.13.1"

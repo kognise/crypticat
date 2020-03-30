@@ -9,6 +9,7 @@ export interface Link {
   uid: string
   cipher: Cipher
   decipher: Decipher
+  nick: string | null
 }
 
 export interface LinkState {
@@ -20,18 +21,23 @@ export interface LinkState {
 const iv = Buffer.alloc(16, 0)
 
 declare interface CrypticatClient {
-  on(event: 'message', listener: (nick: string, content: string) => void): this
-  on(event: 'disconnect', listener: () => void): this
+  on(event: 'message', listener: (userUid: string, nick: string | null, content: string) => void): this
+  on(event: 'close', listener: () => void): this
+  on(event: 'error', listener: (error: Error) => void): this
+
+  on(event: 'connect', listener: (uid: string, nick: string | null) => void): this
+  on(event: 'disconnect', listener: (uid: string, nick: string | null) => void): this
 }
 
 class CrypticatClient extends EventEmitter {
-  linkState: LinkState = {
+  private linkState: LinkState = {
     next: null,
     prev: null,
     df: null
   }
-  room: string | null = null
-  ws?: WebSocket
+  private linkedNextYet: boolean = false
+  private nick: string | null = ''
+  private ws?: WebSocket
 
   constructor() { super() }
 
@@ -58,127 +64,185 @@ class CrypticatClient extends EventEmitter {
     })
 
     this.ws.addEventListener('message', (message: { data: string }) => {
-      assertDefined(this.ws)
-      const { action, payload } = JSON.parse(message.data)
+      try {
+        assertDefined(this.ws)
+        const { action, payload } = JSON.parse(message.data)
 
-      switch (action) {
-        case 'GENERATE_KEY': {
-          this.linkState.df = crypto.createDiffieHellman(Buffer.from(payload.prime, 'hex'))
-          const key = this.linkState.df.generateKeys()
-          this.ws.send(JSON.stringify({
-            action: 'KEY',
-            payload: {
-              key: key.toString('hex')
-            }
-          }))
-          break
-        }
+        switch (action) {
+          case 'GENERATE_KEY': {
+            assertDefined(payload.prime)
 
-        case 'PREV_LINK':
-        case 'NEXT_LINK': {
-          const dir = action === 'PREV_LINK' ? 'prev' : 'next'
-
-          assertDefined(this.linkState.df)
-          const secret = this.linkState.df.computeSecret(Buffer.from(payload.key, 'hex'))
-
-          this.linkState[dir] = {
-            secret,
-            cipher: crypto.createCipheriv('aes-256-gcm', secret, iv),
-            decipher: crypto.createDecipheriv('aes-256-gcm', secret, iv),
-            uid: payload.uid
+            this.linkState.df = crypto.createDiffieHellman(Buffer.from(payload.prime, 'hex'))
+            const key = this.linkState.df.generateKeys()
+            this.ws.send(JSON.stringify({
+              action: 'KEY',
+              payload: {
+                key: key.toString('hex')
+              }
+            }))
+            break
           }
 
-          break
-        }
+          case 'PREV_LINK':
+          case 'NEXT_LINK': {
+            assertDefined(payload.key)
+            assertDefined(payload.uid)
 
-        case 'CLEAR_PREV_LINK':
-        case 'CLEAR_NEXT_LINK': {
-          const dir = action === 'CLEAR_PREV_LINK' ? 'prev' : 'next'
-          delete this.linkState[dir]
-          break
-        }
+            const dir = action === 'PREV_LINK' ? 'prev' : 'next'
 
-        case 'ENCRYPTED_PAYLOAD': {
-          if (payload.dir !== 'prev' && payload.dir !== 'next') break
+            if (action === 'NEXT_LINK' && !this.linkedNextYet) {
+              this.linkedNextYet = true
+              this.emit('connect', payload.uid, payload.nick ?? null)
+              this.sendEncrypted('prev', {
+                action: 'CONNECT',
+                payload: { uid: payload.uid, nick: payload.nick }
+              })
+            } else if (this.linkedNextYet) {
+              console.log('DISCONNECTED', dir)
+              assertDefined(this.linkState[dir])
+              this.emit('disconnect', this.linkState[dir]?.uid, this.linkState[dir]?.nick ?? null)
+              this.sendEncrypted(dir === 'prev' ? 'next' : 'prev', {
+                action: 'DISCONNECT',
+                payload: { uid: this.linkState[dir]?.uid, nick: this.linkState[dir]?.nick }
+              })
+            }
 
-          const inverseLink = this.linkState[payload.dir === 'prev' ? 'next' : 'prev']
-          assertDefined(inverseLink)
+            assertDefined(this.linkState.df)
+            const secret = this.linkState.df.computeSecret(Buffer.from(payload.key, 'hex'))
 
-          const decryptedMessage = inverseLink.decipher.update(Buffer.from(payload.encryptedMessage, 'hex'))
-          const parsed = JSON.parse(decryptedMessage.toString())
+            this.linkState[dir] = {
+              secret,
+              cipher: crypto.createCipheriv('aes-256-gcm', secret, iv),
+              decipher: crypto.createDecipheriv('aes-256-gcm', secret, iv),
+              uid: payload.uid,
+              nick: payload.nick
+            }
 
-          {
-            const { action, payload } = parsed
+            break
+          }
 
-            switch (action) {
-              case 'MESSAGE': {
-                this.emit('message', payload.nick, payload.content)
-                break
+          case 'CLEAR_PREV_LINK':
+          case 'CLEAR_NEXT_LINK': {
+            const dir = action === 'CLEAR_PREV_LINK' ? 'prev' : 'next'
+            delete this.linkState[dir]
+            break
+          }
+
+          case 'ENCRYPTED_PAYLOAD': {
+            if (payload.dir !== 'prev' && payload.dir !== 'next') break
+
+            const inverseLink = this.linkState[payload.dir === 'prev' ? 'next' : 'prev']
+            assertDefined(inverseLink)
+
+            const decryptedMessage = inverseLink.decipher.update(Buffer.from(payload.encryptedMessage, 'hex'))
+            const parsed = JSON.parse(decryptedMessage.toString())
+
+            assertDefined(payload.directFrom)
+            const originalFrom = parsed.from ?? payload.directFrom
+
+            {
+              const { action, payload } = parsed.message
+
+              switch (action) {
+                case 'MESSAGE': {
+                  assertDefined(payload.content)
+                  this.emit('message', originalFrom, payload.nick, payload.content)
+                  if (inverseLink.uid === originalFrom) {
+                    inverseLink.nick = payload.nick
+                  }
+                  break
+                }
+
+                case 'CONNECT': {
+                  assertDefined(payload.uid)
+                  this.emit('connect', payload.uid, payload.nick ?? null)
+                  break
+                }
+
+                case 'DISCONNECT': {
+                  assertDefined(payload.uid)
+                  this.emit('disconnect', payload.uid, payload.nick ?? null)
+                  break
+                }
               }
             }
+
+            const nextDir = payload.dir as 'prev' | 'next'
+            if (this.linkState[nextDir]) this.sendEncrypted(nextDir, parsed.message, originalFrom)
+
+            break
           }
-
-          const nextDir = payload.dir as 'prev' | 'next'
-          if (this.linkState[nextDir]) this.sendEncrypted(nextDir, parsed)
-
-          break
         }
+      } catch (error) {
+        this.emit('error', error)
       }
     })
 
-    this.ws.addEventListener('close', () => this.emit('disconnect'))
+    this.ws.addEventListener('close', () => this.emit('close'))
   }
 
   async joinRoom(name: string) {
     this.assertWs(this.ws)
     this.ws.send(JSON.stringify({
       action: 'JOIN_ROOM',
-      payload: { name }
+      payload: { name, nick: this.nick }
     }))
 
     this.linkState.df = null
     this.linkState.next = null
     this.linkState.prev = null
+    this.linkedNextYet = false
 
     await waitFor(this.ws, 'ROOM_READY')
-    this.room = name
   }
 
-  sendMessage(nick: string, content: string) {
+  sendMessage(content: string) {
     this.assertWs(this.ws)
 
     if (this.linkState.next) {
       this.sendEncrypted('next', {
         action: 'MESSAGE',
-        payload: { content, nick }
+        payload: { content, nick: this.nick }
       })
     }
 
     if (this.linkState.prev) {
       this.sendEncrypted('prev', {
         action: 'MESSAGE',
-        payload: { content, nick }
+        payload: { content, nick: this.nick }
       })
     }
   }
 
+  setNick(nick: string | null) {
+    this.nick = nick
+  }
+
+  getNick() {
+    return this.nick
+  }
+
   private assertWs(ws?: WebSocket): asserts ws is NonNullable<WebSocket> {
-    if (ws === undefined || ws.readyState !== 1) {
-      throw new AssertionError({ message: 'The websocket is not open!' })
+    if (ws?.readyState !== 1) {
+      throw new AssertionError({
+        message: 'The websocket is not open!',
+        expected: 1,
+        actual: ws?.readyState
+      })
     }
   }
 
-  private sendEncrypted(dir: 'next' | 'prev', message: { action: string, payload: object }) {
+  private sendEncrypted(dir: 'next' | 'prev', message: { action: string, payload: object }, from?: string) {
     this.assertWs(this.ws)
 
     const link = this.linkState[dir]
-    assertDefined(link)
+    if (!link) return
 
     this.ws.send(JSON.stringify({
       action: 'DISPATCH_ENCRYPTED',
       payload: {
         recipient: link.uid,
-        encryptedMessage: link.cipher.update(JSON.stringify(message)).toString('hex'),
+        encryptedMessage: link.cipher.update(JSON.stringify({ message, from })).toString('hex'),
         dir
       }
     }))

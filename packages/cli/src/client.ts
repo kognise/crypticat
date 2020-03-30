@@ -37,8 +37,11 @@ const input = async () => {
 
 const client = new CrypticatClient()
 
-client.on('message', (nick, content) => print(`${chalk.cyan.bold(nick)} ${content}`))
-client.on('disconnect', () => {
+client.on('connect', (_, nick) => print(chalk.bold(`${nick ?? 'someone'} joined the room`)))
+client.on('disconnect', (_, nick) => print(chalk.bold(`${nick ?? 'someone'} left the room`)))
+
+client.on('message', (_, nick, content) => print(`${chalk.cyan.bold(nick ?? 'unnicked')} ${content}`))
+client.on('close', () => {
   print(chalk.red('Connection lost!'))
   process.exit()
 })
@@ -57,13 +60,13 @@ export const go = async (address: string) => {
   }
 
   print(chalk.green('Connection established!'))
+  client.setNick(config.get('nickname', null) + Math.random().toString(12).slice(2, 6))
 
   print('')
   await joinRoom('lobby')
 
-  let nick = config.get('nickname', null)
-  if (nick) {
-    print(`Your nickname is currently ${chalk.cyan(nick)}`)
+  if (client.getNick()) {
+    print(`Your nickname is currently ${chalk.cyan(client.getNick())}`)
   } else {
     print(`Please set a nickname with \`${chalk.cyan('/nick <nickname>')}\``)
   }
@@ -95,15 +98,15 @@ export const go = async (address: string) => {
 
         case 'nick': {
           if (!args[0]) {
-            nick = null
+            client.setNick(null)
             config.delete('nickname')
             print(chalk.green('Reset nickname'))
             break
           }
 
-          nick = args.join(' ')
-          config.set('nickname', nick)
-          print(chalk.green(`Updated nickname to ${nick}`))
+          client.setNick(args.join(' '))
+          config.set('nickname', client.getNick())
+          print(chalk.green(`Updated nickname to ${client.getNick()}`))
           break
         }
       }
@@ -111,6 +114,6 @@ export const go = async (address: string) => {
       continue
     }
 
-    client.sendMessage(nick ?? 'unnicked', message)
+    client.sendMessage(message)
   }
 }

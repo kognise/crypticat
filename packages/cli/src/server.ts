@@ -5,7 +5,7 @@ const server = new CrypticatServer()
 
 server.on('connect', (uid) => console.log(`${chalk.gray(uid.slice(0, 6))} connected`))
 server.on('disconnect', (uid) => console.log(`${chalk.gray(uid.slice(0, 6))} disconnected`))
-server.on('join', (uid, room) => console.log(`${chalk.gray(uid.slice(0, 6))} joined ${chalk.cyan(`#${room}`)}`))
+server.on('join', (uid, room, nick) => console.log(`${chalk.gray(uid.slice(0, 6))} joined ${chalk.cyan(`#${room}`)} as ${chalk.cyan(nick ?? 'unnicked')}`))
 server.on('dispatch', (from, to) => console.log(`${from.slice(0, 6)} ${chalk.gray('->')} ${to.slice(0, 6)}`))
 
 export const go = (port: number) => {

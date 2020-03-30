@@ -18,15 +18,15 @@ export interface Room {
 
 declare interface CrypticatServer {
   on(event: 'connect', listener: (uid: string) => void): this
-  on(event: 'join', listener: (uid: string, room: string) => void): this
+  on(event: 'join', listener: (uid: string, room: string, nick: string | null) => void): this
   on(event: 'dispatch', listener: (fromUid: string, toUid: string) => void): this
   on(event: 'disconnect', listener: (uid: string) => void): this
 }
 
 class CrypticatServer extends EventEmitter {
-  sockets: { [key: string]: WebSocket } = {}
-  rooms: Room[] = []
-  wss?: WebSocket.Server
+  private sockets: { [key: string]: WebSocket } = {}
+  private rooms: Room[] = []
+  private wss?: WebSocket.Server
 
   constructor() { super() }
 
@@ -114,11 +114,10 @@ class CrypticatServer extends EventEmitter {
 
         switch (action) {
           case 'JOIN_ROOM': {
-            this.emit('join', uid, payload.name)
+            assertDefined(payload.name)
+            this.emit('join', uid, payload.name, payload.nick ?? null)
 
-            if (room) {
-              await leaveRoom()
-            }
+            if (room) await leaveRoom()
 
             const existingRoom = this.rooms.find(({ name }) => name === payload.name)
             if (!existingRoom) {
@@ -158,7 +157,7 @@ class CrypticatServer extends EventEmitter {
 
             aliceWs.send(JSON.stringify({
               action: 'NEXT_LINK',
-              payload: { key: bobKey, uid }
+              payload: { key: bobKey, uid, nick: payload.nick }
             }))
 
             existingRoom.links.unshift(uid)
@@ -173,13 +172,17 @@ class CrypticatServer extends EventEmitter {
           }
 
           case 'DISPATCH_ENCRYPTED': {
+            assertDefined(payload.recipient)
+            assertDefined(payload.encryptedMessage)
+            assertDefined(payload.dir)
+
             this.emit('dispatch', uid, payload.recipient)
 
             const recipientWs = this.sockets[payload.recipient]
             recipientWs.send(JSON.stringify({
               action: 'ENCRYPTED_PAYLOAD',
-              from: uid,
               payload: {
+                directFrom: uid,
                 encryptedMessage: payload.encryptedMessage,
                 dir: payload.dir
               }
