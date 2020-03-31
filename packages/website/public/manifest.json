@@ -1,0 +1,21 @@
+{
+  "name": "crypticat",
+  "short_name": "crypticat",
+  "icons": [
+    {
+      "src": "/app/icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/app/icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "background_color": "#202225",
+  "description": "A dead simple end-to-end encrypted chat platform.",
+  "display": "fullscreen",
+  "start_url": "/",
+  "theme_color": "#16171A"
+}

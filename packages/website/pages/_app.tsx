@@ -15,6 +15,13 @@ export default ({ Component, pageProps }: AppProps) => (
       <link href='/icon.svg' rel='icon' />
       <link href='/icon.svg' rel='shortcut icon' />
       <link href='/icon.svg' rel='favicon' />
+
+      <link rel="manifest" href="/manifest.json" />
+      <meta name="theme-color" content="#16171A" />
+      <meta
+        name="description"
+        content="A dead simple end-to-end encrypted chat platform."
+      />
     </Head>
     <Component {...pageProps} />
 
