@@ -36,7 +36,7 @@ class CrypticatClient extends EventEmitter {
     df: null
   }
   private linkedNextYet: boolean = false
-  private nick: string | null = ''
+  private nick: string | null = null
   private ws?: WebSocket
 
   constructor() { super() }
