@@ -17,7 +17,8 @@ import NickModal from '../modals/nick'
 import RoomModal from '../modals/room'
 
 interface MessageGroup {
-  from: string
+  nick: string | null
+  userUid: string
   uid: string
   you: boolean
   messages: {
@@ -29,6 +30,7 @@ interface MessageGroup {
 export default () => {
   const [address, setAddress] = useState('wss://2b70a277.ngrok.io')
   const [client, setClient] = useState<CrypticatClient | null>(null)
+  console.log('->', client?.getNick(), !!client)
   const [connecting, setConnecting] = useState(false)
 
   const [nick, setNick] = useState<string | null>(null)
@@ -42,6 +44,7 @@ export default () => {
   const scrollBottomRef = useRef<HTMLDivElement>(null)
 
   const joinRoom = async (newRoom: string, thisClient: CrypticatClient | null = client) => {
+    console.log(thisClient?.getNick())
     setMessageGroups([])
     setMissed(0)
     if (!thisClient) return setRoom('lobby')
@@ -50,11 +53,11 @@ export default () => {
     setRoom(newRoom)
   }
 
-  const addMessage = async (from: string, content: string, you: boolean) => {
+  const addMessage = async (userUid: string, nick: string | null, content: string, you: boolean) => {
     const uid = await createUid(8)
 
     setMessageGroups((messageGroups) => {
-      if (messageGroups[messageGroups.length - 1]?.from === from) {
+      if (messageGroups[messageGroups.length - 1]?.userUid === userUid) {
         return messageGroups.slice(0, -1).concat([
           {
             ...messageGroups[messageGroups.length - 1],
@@ -66,9 +69,9 @@ export default () => {
       } else {
         return messageGroups.concat([
           {
-            from, you,
+            nick, you,
             messages: [{ content, uid }],
-            uid
+            uid, userUid
           }
         ])
       }
@@ -79,11 +82,15 @@ export default () => {
   }
 
   useEffect(() => {
+    client?.setNick(nick)
+  }, [client, nick])
+
+  useEffect(() => {
     if (!client) return
     setRoom('lobby')
 
-    client.on('message', async (from, content) => {
-      addMessage(from, content, false)
+    client.on('message', async (userUid, nick, content) => {
+      addMessage(userUid, nick, content, false)
     })
 
     client.on('disconnect', () => setClient(null))
@@ -189,9 +196,9 @@ export default () => {
           </Text>
         </Box>
 
-        {messageGroups.map(({ from, messages, uid, you }) => (
+        {messageGroups.map(({ nick, messages, uid, you }) => (
           <Box mb={16} key={uid}>
-            <Text weight={500} color={you ? 'yellow' : 'blue'}>{from}</Text>
+            <Text weight={500} color={you ? 'yellow' : 'blue'}>{nick ?? 'unnicked'}</Text>
             {messages.map(({ content, uid }) => (
               <Text color='text-normal' mt={8} key={uid}>{content}</Text>
             ))}
@@ -202,8 +209,8 @@ export default () => {
       </Box>
 
       <ChatInput room={room} onSend={async (content) => {
-        client.sendMessage(nick ?? 'unnicked', content)
-        addMessage(nick ?? 'unnicked', content, true)
+        client.sendMessage(content)
+        addMessage('_', nick ?? 'unnicked', content, true)
       }} />
     </Box>
   )

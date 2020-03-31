@@ -10,16 +10,16 @@
     "dev": "next"
   },
   "dependencies": {
-    "@crypticat/core": "^0.1.9",
+    "@crypticat/core": "^0.2.4",
     "@crypticat/ionicons": "^0.1.1",
-    "next": "^9.3.2",
+    "next": "^9.3.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-modal": "^3.11.2",
     "uid-promise": "^1.1.0"
   },
   "devDependencies": {
-    "@types/node": "^13.9.5",
+    "@types/node": "^13.9.8",
     "@types/react": "^16.9.27",
     "@types/react-modal": "^3.10.5",
     "typescript": "^3.8.3"
