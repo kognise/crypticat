@@ -9,6 +9,7 @@ With npm installed, you can install the cli with `npm i -g @crypticat/cli` then 
 ## Goals
 
 - It should be secure
+- Messages records shouldn't be saved
 - Anyone should be able to run their own server
 - It should be open-source and extensible
 - The web ui and cli should have the same usability
