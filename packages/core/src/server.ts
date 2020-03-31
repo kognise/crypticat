@@ -18,9 +18,9 @@ export interface Room {
 
 declare interface CrypticatServer {
   on(event: 'connect', listener: (uid: string) => void): this
+  on(event: 'disconnect', listener: (uid: string) => void): this
   on(event: 'join', listener: (uid: string, room: string, nick: string | null) => void): this
   on(event: 'dispatch', listener: (fromUid: string, toUid: string) => void): this
-  on(event: 'disconnect', listener: (uid: string) => void): this
 }
 
 class CrypticatServer extends EventEmitter {
