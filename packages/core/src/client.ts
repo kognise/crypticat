@@ -62,6 +62,11 @@ class CrypticatClient extends EventEmitter {
       this.ws.addEventListener('open', listeners.open)
     })
 
+    const pongInterval = setInterval(() => this.ws.send(JSON.stringify({
+      action: 'PONG',
+      payload: {}
+    })), 1000)
+
     this.ws.addEventListener('message', (message: { data: string }) => {
       try {
         assertDefined(this.ws)
@@ -182,7 +187,10 @@ class CrypticatClient extends EventEmitter {
       }
     })
 
-    this.ws.addEventListener('close', () => this.emit('close'))
+    this.ws.addEventListener('close', () => {
+      this.emit('close')
+      clearInterval(pongInterval)
+    })
   }
 
   async joinRoom(name: string) {
