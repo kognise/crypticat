@@ -11,5 +11,5 @@ server.on('dispatch', (from, to) => console.log(`${from.slice(0, 6)} ${chalk.gra
 export const go = (port: number) => {
   console.log(chalk.green(`Started server on port ${port}`))
   console.log(`Connect with \`${chalk.cyan(`crypticat ws://localhost:${port}`)}\``)
-  server.listen(8080)
+  server.listen(port)
 }
