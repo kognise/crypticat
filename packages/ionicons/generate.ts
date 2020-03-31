@@ -1,29 +1,54 @@
+import dotenv from 'dotenv'
+dotenv.config()
+
 import svgr from '@svgr/core'
 import fs from 'fs-extra'
 import fetch from 'isomorphic-unfetch'
 import chalk from 'chalk'
 import camelCase from 'camelcase'
 
-const repo = 'ionic-team/ionicons'
-const directory = 'src/svg/'
 const out = 'components/'
-
-const listingApi = `https://api.github.com/repos/${repo}/contents/${directory}`
-const rawPrefix = `https://raw.githubusercontent.com/${repo}/master/${directory}`
 
 const go = async () => {
   await fs.emptyDir(out)
 
   console.log(chalk.yellow('Fetching files...'))
-  const res = await fetch(listingApi)
-  const files = await res.json()
-  const svgs = files.map(({ name }) => name).filter((name) => name.endsWith('.svg')).map((name) => name.slice(0, -4))
+  const res = await fetch('https://api.github.com/graphql', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`
+    },
+    body: JSON.stringify({
+      query: `
+        query { 
+          repository(name: "ionicons", owner: "ionic-team") {
+            object(expression: "master:src/svg") {
+              ... on Tree {
+                entries {
+                  name
+                  object {
+                    ... on Blob {
+                      text
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `
+    })
+  })
+  const json = await res.json()
 
-  for (let svg of svgs) {
+  for (let file of json.data.repository.object.entries) {
+    if (!file.name.endsWith('.svg')) continue
+    const svg = file.name.slice(0, -4)
+
     console.log(`Converting ${chalk.cyan(svg)} to a React component`)
-    const res2 = await fetch(`${rawPrefix}${svg}.svg`)
-    const source = await res2.text()
-    const js = await svgr(source, {
+
+    const js = await svgr(file.object.text, {
       plugins: [
         '@svgr/plugin-jsx',
         '@svgr/plugin-prettier'
@@ -40,7 +65,7 @@ import * as React from 'react'
 
 export default () => (
   <div>
-    Please import individual files, for example <code>import AddCircleOutlineIcon from '@crypticat/add-circle-outline'</code>.
+    Please import individual files, for example <code>import AddCircleOutlineIcon from '@crypticat/ionicons/lib/add-circle-outline'</code>.
   </div>
 )
   `.trim())
@@ -48,4 +73,8 @@ export default () => (
   console.log(chalk.green('Done!'))
 }
 
-go()
+if (process.env.GITHUB_TOKEN) {
+  go()
+} else {
+  console.log(chalk.red('Please set the GITHUB_TOKEN environment variable!'))
+}

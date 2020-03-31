@@ -1,6 +1,6 @@
 {
   "name": "@crypticat/ionicons",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "The best Ionicons library for React",
   "author": "Kognise <felix.mattick@gmail.com>",
   "homepage": "",
@@ -24,6 +24,7 @@
     "preversion": "yarn tsc"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "react": "^16.13.1"
   },
   "devDependencies": {

@@ -3,8 +3,9 @@ import { useState, useEffect, useRef, FormEvent } from 'react'
 import { CrypticatClient } from '@crypticat/core'
 import createUid from 'uid-promise'
 
+import ServerIcon from '@crypticat/ionicons/lib/server-outline'
 import NickIcon from '@crypticat/ionicons/lib/at-outline'
-import RoomIcon from '@crypticat/ionicons/lib/chatbubbles-outline'
+import RoomIcon from '@crypticat/ionicons/lib/swap-horizontal-outline'
 import JoinIcon from '@crypticat/ionicons/lib/arrow-forward-outline'
 import LeaveIcon from '@crypticat/ionicons/lib/arrow-back-outline'
 
@@ -40,7 +41,7 @@ const isJol = (thing: any): thing is JoinOrLeave => thing.uid && thing.userUid &
 const isMessageGroup = (thing: any): thing is MessageGroup => thing.uid && thing.userUid && thing.you !== undefined && thing.messages
 
 export default () => {
-  const [address, setAddress] = useState('wss://2b70a277.ngrok.io')
+  const [address, setAddress] = useState('ws://localhost:8080')
   const [client, setClient] = useState<CrypticatClient | null>(null)
   const [connecting, setConnecting] = useState(false)
 
@@ -105,8 +106,27 @@ export default () => {
   }
 
   useEffect(() => {
+    const address = localStorage.getItem('address')
+    const nick = localStorage.getItem('nick')
+
+    if (address) setAddress(address)
+    if (nick) setNick(nick)
+
+    const listener = () => { if (!document.hidden) setMissed(0) }
+    document.addEventListener('visibilitychange', listener)
+    return () => document.removeEventListener('visibilitychange', listener)
+  }, [])
+
+  useEffect(() => {
     client?.setNick(nick)
+    if (nick) {
+      localStorage.setItem('nick', nick)
+    } else {
+      localStorage.removeItem('nick')
+    }
   }, [client, nick])
+
+  useEffect(() => localStorage.setItem('address', address), [address])
 
   useEffect(() => {
     if (!client) return
@@ -119,15 +139,6 @@ export default () => {
     client.on('close', () => setClient(null))
     return () => { client.removeAllListeners() }
   }, [client])
-
-  useEffect(() => {
-    const listener = () => {
-      if (!document.hidden) setMissed(0)
-    }
-
-    document.addEventListener('visibilitychange', listener)
-    return () => document.removeEventListener('visibilitychange', listener)
-  })
 
   if (!client) {
     return (
@@ -166,7 +177,8 @@ export default () => {
 
             setConnecting(false)
             setClient(newClient)
-            setShowNickModal(true)
+
+            if (!nick) setShowNickModal(true)
           }}>
             <Input placeholder='WebSocket address' value={address} onChange={setAddress} mr={16} />
             <Button submit disabled={!address || connecting}>Connect</Button>
@@ -205,6 +217,7 @@ export default () => {
         </Box>
 
         <Box flex>
+          <IconButton icon={ServerIcon} onClick={() => setShowNickModal(true)} mr={8} />
           <IconButton icon={NickIcon} onClick={() => setShowNickModal(true)} mr={8} />
           <IconButton icon={RoomIcon} onClick={() => setShowRoomModal(true)} />
         </Box>
