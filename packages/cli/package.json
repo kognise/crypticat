@@ -1,6 +1,6 @@
 {
   "name": "@crypticat/cli",
-  "version": "0.2.11",
+  "version": "0.2.12",
   "description": "Crypticat's command-line interface",
   "author": "Kognise <felix.mattick@gmail.com>",
   "homepage": "",
@@ -27,7 +27,7 @@
     "preversion": "yarn tsc"
   },
   "dependencies": {
-    "@crypticat/core": "^0.2.6",
+    "@crypticat/core": "^0.2.7",
     "chalk": "^3.0.0",
     "conf": "^6.2.1",
     "readline-promise": "^1.0.4",

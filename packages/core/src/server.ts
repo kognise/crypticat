@@ -51,6 +51,13 @@ class CrypticatServer extends EventEmitter {
       this.emit('connect', uid)
       let room: Room | null = null
 
+      const interval = setInterval(() => {
+        ws.send(JSON.stringify({
+          action: 'PING',
+          payload: {}
+        }))
+      }, 1000)
+
       const leaveRoom = async () => {
         assertDefined(room)
 
@@ -196,6 +203,7 @@ class CrypticatServer extends EventEmitter {
       ws.addEventListener('close', () => {
         this.emit('disconnect', uid)
         if (room) leaveRoom()
+        clearInterval(interval)
       })
     })
   }

@@ -1,6 +1,6 @@
 {
   "name": "@crypticat/core",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "description": "Crypticat's core client and server implementation",
   "author": "Kognise <felix.mattick@gmail.com>",
   "homepage": "",
