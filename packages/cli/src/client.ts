@@ -39,6 +39,7 @@ const client = new CrypticatClient()
 
 client.on('connect', (_, nick) => print(chalk.bold(`${nick ?? 'someone'} joined the room`)))
 client.on('disconnect', (_, nick) => print(chalk.bold(`${nick ?? 'someone'} left the room`)))
+client.on('error', (error) => chalk.red(`Error: ${error}`))
 
 client.on('message', (_, nick, content) => print(`${chalk.cyan.bold(nick ?? 'unnicked')} ${content}`))
 client.on('close', () => {
