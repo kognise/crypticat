@@ -1,6 +1,6 @@
 {
   "name": "@crypticat/cli",
-  "version": "0.2.5",
+  "version": "0.2.6",
   "description": "Crypticat's command-line interface",
   "author": "Kognise <felix.mattick@gmail.com>",
   "homepage": "",
@@ -30,7 +30,8 @@
     "@crypticat/core": "^0.2.3",
     "chalk": "^3.0.0",
     "conf": "^6.2.1",
-    "readline-promise": "^1.0.4"
+    "readline-promise": "^1.0.4",
+    "update-check": "^1.5.3"
   },
   "devDependencies": {
     "@types/node": "^13.9.5",

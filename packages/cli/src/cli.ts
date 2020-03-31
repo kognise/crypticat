@@ -1,7 +1,23 @@
-const [_, ...args] = process.argv
+import pkg from '../package.json'
+import checkForUpdate from 'update-check'
+import chalk from 'chalk'
 
-if (args[1] === 'serve') {
-  import('./server').then(({ go }) => go(parseInt(args[2]) || 8080))
-} else {
-  import('./client').then(({ go }) => go(args[1] ?? 'ws://localhost:8080'))
+const go = async () => {
+  const [_, ...args] = process.argv
+
+  if (args[1] === 'serve') {
+    const { go } = await import('./server')
+    go(parseInt(args[2]) || 8080)
+  } else {
+    const { go } = await import('./client')
+    go(args[1] ?? 'ws://localhost:8080')
+  }
 }
+
+checkForUpdate(pkg).then((update) => {
+  if (update) {
+    console.log(`${chalk.bgRed.whiteBright('UPDATE AVAILABLE')} The latest version is ${update.latest}`)
+  }
+}).catch(() => {
+  console.log(chalk.red('Unable to check for updates'))
+}).then(go)
