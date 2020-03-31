@@ -3,7 +3,6 @@ import { useState, useEffect, useRef, FormEvent } from 'react'
 import { CrypticatClient } from '@crypticat/core'
 import createUid from 'uid-promise'
 
-import ServerIcon from '@crypticat/ionicons/lib/server-outline'
 import NickIcon from '@crypticat/ionicons/lib/at-outline'
 import RoomIcon from '@crypticat/ionicons/lib/swap-horizontal-outline'
 import JoinIcon from '@crypticat/ionicons/lib/arrow-forward-outline'
@@ -217,7 +216,6 @@ export default () => {
         </Box>
 
         <Box flex>
-          <IconButton icon={ServerIcon} onClick={() => setShowNickModal(true)} mr={8} />
           <IconButton icon={NickIcon} onClick={() => setShowNickModal(true)} mr={8} />
           <IconButton icon={RoomIcon} onClick={() => setShowRoomModal(true)} />
         </Box>

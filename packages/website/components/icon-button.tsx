@@ -23,7 +23,7 @@ export default ({
 
           display: block;
           box-sizing: border-box;
-          transition: 120ms color ease-in;
+          transition: color 120ms ease-in;
         }
 
         button:hover {

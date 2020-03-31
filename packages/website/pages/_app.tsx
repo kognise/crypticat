@@ -33,7 +33,7 @@ export default ({ Component, pageProps }: AppProps) => {
           --interactive-normal: #B9BBBE;
           --interactive-hover: #FFFFFF;
 
-          --ghost: rgba(255, 255, 255, 2%);
+          --ghost: #272A2E;
           --accent: #3F51B5;
           --yellow: #FFE066;
           --blue: #74C0FC;

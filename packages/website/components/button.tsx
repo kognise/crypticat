@@ -36,11 +36,21 @@ export default ({
           border-radius: var(--radius-sm);
           box-sizing: border-box;
           vertical-align: middle;
+
+          transition: filter 120ms ease-in;
         }
 
         button[disabled] {
           cursor: not-allowed;
           filter: grayscale(70%) brightness(110%);
+        }
+
+        button:not([disabled]):hover {
+          filter: brightness(110%);
+        }
+
+        button:not([disabled]):active {
+          filter: brightness(120%);
         }
       `}</style>
     </button>
