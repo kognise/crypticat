@@ -124,6 +124,13 @@ class CrypticatClient extends EventEmitter {
           case 'CLEAR_PREV_LINK':
           case 'CLEAR_NEXT_LINK': {
             const dir = action === 'CLEAR_PREV_LINK' ? 'prev' : 'next'
+
+            this.emit('disconnect', this.linkState[dir]?.uid, this.linkState[dir]?.nick ?? null)
+            this.sendEncrypted(dir === 'prev' ? 'next' : 'prev', {
+              action: 'DISCONNECT',
+              payload: { uid: this.linkState[dir]?.uid, nick: this.linkState[dir]?.nick }
+            })
+
             delete this.linkState[dir]
             break
           }
