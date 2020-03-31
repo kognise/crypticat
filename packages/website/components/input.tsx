@@ -17,7 +17,7 @@ export default ({
   ...props
 }: Props) => (<>
   <input autoFocus={autoFocus} type={type} onChange={(event) => onChange && onChange(event.target.value)} value={value} placeholder={placeholder} {...props} />
-  <style jsx>{`
+  <style jsx>/* CSS */  `
     input {
       ${getSpaceStyles({ m, mx, my, ml, mr, mt, mb, px: 16 })}
       font-size: var(--font-sm);

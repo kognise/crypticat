@@ -19,7 +19,7 @@ export default ({
     <button type={submit ? 'submit' : 'button'} onClick={onClick} disabled={disabled} {...props}>
       {children}
 
-      <style jsx>{`
+      <style jsx>/* CSS */  `
         button {
           ${getSpaceStyles({ m, mx, my, ml, mr, mt, mb, px: 16 })}
           font-size: var(--font-md);

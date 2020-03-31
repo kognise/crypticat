@@ -18,7 +18,7 @@ export default ({ onSend, room }: Props) => {
       setContent('')
     }}>
       <input type='text' autoFocus onChange={(event) => setContent(event.target.value)} value={content} placeholder={`Send a message in #${room}`} />
-      <style jsx>{`
+      <style jsx>/* CSS */  `
         input {
           ${getSpaceStyles({ px: 24, py: 28 })}
           font-size: var(--font-md);

@@ -20,7 +20,7 @@ const go = async () => {
       'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`
     },
     body: JSON.stringify({
-      query: `
+      query: /* GraphQL */ `
         query { 
           repository(name: "ionicons", owner: "ionic-team") {
             object(expression: "master:src/svg") {
