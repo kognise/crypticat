@@ -1,10 +1,12 @@
 import Head from 'next/head'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, FormEvent } from 'react'
 import { CrypticatClient } from '@crypticat/core'
 import createUid from 'uid-promise'
 
 import NickIcon from '@crypticat/ionicons/lib/at-outline'
 import RoomIcon from '@crypticat/ionicons/lib/chatbubbles-outline'
+import JoinIcon from '@crypticat/ionicons/lib/arrow-forward-outline'
+import LeaveIcon from '@crypticat/ionicons/lib/arrow-back-outline'
 
 import Box from '../components/box'
 import Text from '../components/text'
@@ -27,15 +29,24 @@ interface MessageGroup {
   }[]
 }
 
+interface JoinOrLeave {
+  uid: string
+  userUid: string
+  nick: string | null
+  joined: boolean
+}
+
+const isJol = (thing: any): thing is JoinOrLeave => thing.uid && thing.userUid && !thing.messages && !thing.content && thing.joined !== undefined
+const isMessageGroup = (thing: any): thing is MessageGroup => thing.uid && thing.userUid && thing.you !== undefined && thing.messages
+
 export default () => {
   const [address, setAddress] = useState('wss://2b70a277.ngrok.io')
   const [client, setClient] = useState<CrypticatClient | null>(null)
-  console.log('->', client?.getNick(), !!client)
   const [connecting, setConnecting] = useState(false)
 
   const [nick, setNick] = useState<string | null>(null)
   const [room, setRoom] = useState('lobby')
-  const [messageGroups, setMessageGroups] = useState<MessageGroup[]>([])
+  const [messageGroups, setMessageGroups] = useState<(MessageGroup | JoinOrLeave)[]>([])
   const [missed, setMissed] = useState(0)
 
   const [showNickModal, setShowNickModal] = useState(false)
@@ -57,11 +68,12 @@ export default () => {
     const uid = await createUid(8)
 
     setMessageGroups((messageGroups) => {
-      if (messageGroups[messageGroups.length - 1]?.userUid === userUid) {
+      const last = messageGroups[messageGroups.length - 1]
+      if (last?.userUid === userUid && isMessageGroup(last)) {
         return messageGroups.slice(0, -1).concat([
           {
-            ...messageGroups[messageGroups.length - 1],
-            messages: messageGroups[messageGroups.length - 1].messages.concat([
+            ...last,
+            messages: last.messages.concat([
               { content, uid }
             ])
           }
@@ -81,6 +93,17 @@ export default () => {
     if (document.hidden) setMissed((missed) => missed + 1)
   }
 
+  const addJol = async (userUid: string, nick: string | null, joined: boolean) => {
+    const uid = await createUid(8)
+
+    setMessageGroups((messageGroups) => messageGroups.concat([
+      { uid, userUid, nick, joined }
+    ]))
+
+    scrollBottomRef.current?.scrollIntoView()
+    if (document.hidden) setMissed((missed) => missed + 1)
+  }
+
   useEffect(() => {
     client?.setNick(nick)
   }, [client, nick])
@@ -89,11 +112,11 @@ export default () => {
     if (!client) return
     setRoom('lobby')
 
-    client.on('message', async (userUid, nick, content) => {
-      addMessage(userUid, nick, content, false)
-    })
+    client.on('message', (userUid, nick, content) => addMessage(userUid, nick, content, false))
+    client.on('connect', async (userUid, nick) => addJol(userUid, nick, true))
+    client.on('disconnect', async (userUid, nick) => addJol(userUid, nick, false))
 
-    client.on('disconnect', () => setClient(null))
+    client.on('close', () => setClient(null))
     return () => { client.removeAllListeners() }
   }, [client])
 
@@ -131,20 +154,22 @@ export default () => {
             Get started by choosing a server to connect to. This will be saved when you visit the site in the future.
           </Text>
 
-          <Box flex fullWidth justify='center' mt={32}>
+          <Box $='form' flex fullWidth justify='center' mt={32} onSubmit={async (event: FormEvent<HTMLFormElement>) => {
+            event.preventDefault()
+
+            if (connecting) return
+            const newClient = new CrypticatClient()
+            setConnecting(true)
+
+            await newClient.connect(address)
+            await joinRoom('lobby', newClient)
+
+            setConnecting(false)
+            setClient(newClient)
+            setShowNickModal(true)
+          }}>
             <Input placeholder='WebSocket address' value={address} onChange={setAddress} mr={16} />
-            <Button onClick={async () => {
-              if (connecting) return
-              const newClient = new CrypticatClient()
-              setConnecting(true)
-
-              await newClient.connect(address)
-              await joinRoom('lobby', newClient)
-
-              setConnecting(false)
-              setClient(newClient)
-              setShowNickModal(true)
-            }} disabled={!address || connecting}>Connect</Button>
+            <Button submit disabled={!address || connecting}>Connect</Button>
           </Box>
         </Box>
       </Box>
@@ -196,14 +221,30 @@ export default () => {
           </Text>
         </Box>
 
-        {messageGroups.map(({ nick, messages, uid, you }) => (
-          <Box mb={16} key={uid}>
-            <Text weight={500} color={you ? 'yellow' : 'blue'}>{nick ?? 'unnicked'}</Text>
-            {messages.map(({ content, uid }) => (
-              <Text color='text-normal' mt={8} key={uid}>{content}</Text>
-            ))}
-          </Box>
-        ))}
+        {messageGroups.map((messageGroup) => {
+          if (isMessageGroup(messageGroup)) {
+            const { nick, messages, uid, you } = messageGroup
+            return (
+              <Box mb={16} key={uid}>
+                <Text weight={500} color={you ? 'yellow' : 'blue'}>{nick ?? 'unnicked'}</Text>
+                {messages.map(({ content, uid }) => (
+                  <Text color='text-normal' mt={8} key={uid}>{content}</Text>
+                ))}
+              </Box>
+            )
+          } else if (isJol(messageGroup)) {
+            const { uid, nick, joined } = messageGroup
+            const Icon = joined ? JoinIcon : LeaveIcon
+            return (
+              <Box flex mb={16} key={uid} align='center'>
+                <Text color='heading-primary' size={2}><Icon display='block' /></Text>
+                <Text color='text-normal' ml={8}>
+                  <Text $='span' color='blue'>{nick}</Text> {joined ? 'joined' : 'left'} the room
+                </Text>
+              </Box>
+            )
+          }
+        })}
 
         <div aria-hidden ref={scrollBottomRef} />
       </Box>

@@ -61,7 +61,7 @@ export const go = async (address: string) => {
   }
 
   print(chalk.green('Connection established!'))
-  client.setNick(config.get('nickname', null) + Math.random().toString(12).slice(2, 6))
+  client.setNick(config.get('nickname', null))
 
   print('')
   await joinRoom('lobby')

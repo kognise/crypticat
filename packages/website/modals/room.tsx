@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, FormEvent } from 'react'
 import Modal from 'react-modal'
 
 import Box from '../components/box'
@@ -32,7 +32,7 @@ export default ({ show, close, setRoom }: Props) => {
         Join a room
       </Text>
 
-      <form onSubmit={async (event) => {
+      <Box $='form' onSubmit={async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setJoining(true)
         await setRoom(tempRoom)
@@ -45,7 +45,7 @@ export default ({ show, close, setRoom }: Props) => {
           <Button onClick={close} color='ghost' mr={16}>Cancel</Button>
           <Button submit disabled={!tempRoom || joining}>Join</Button>
         </Box>
-      </form>
+      </Box>
     </Modal>
   )
 }

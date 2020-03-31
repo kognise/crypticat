@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, FormEvent } from 'react'
 import { getSpaceStyles } from '../lib/stylegen'
+import Box from './box'
 
 type Props = {
   onSend: (content: string) => void
@@ -10,7 +11,7 @@ export default ({ onSend, room }: Props) => {
   const [content, setContent] = useState('')
 
   return (
-    <form onSubmit={(event) => {
+    <Box $='form' onSubmit={(event: FormEvent<HTMLFormElement>) => {
       event.preventDefault()
       if (!content.trim()) return
       onSend(content.trim())
@@ -36,6 +37,6 @@ export default ({ onSend, room }: Props) => {
           color: var(--text-muted);
         }
       `}</style>
-    </form>
+    </Box>
   )
 }

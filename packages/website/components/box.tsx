@@ -8,6 +8,7 @@ type Props = PropsWithChildren<{
   fullHeight?: boolean
   fullWidth?: boolean
   scrollfix?: boolean
+  [x: string]: any
 } & FlexProps & SpaceProps>
 
 export default ({
@@ -15,9 +16,10 @@ export default ({
   direction, align, expand, justify, flex,
   fullHeight, fullWidth, scrollfix,
   m, mx, my, ml, mr, mt, mb,
-  p, px, py, pl, pr, pt, pb
+  p, px, py, pl, pr, pt, pb,
+  ...props
 }: Props) => (
-    <$>
+    <$ {...props}>
       {children}
 
       <style jsx>{`

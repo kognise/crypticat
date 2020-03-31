@@ -7,14 +7,16 @@ type Props = PropsWithChildren<{
   disabled?: boolean
   submit?: boolean
   color?: 'accent' | 'ghost'
+  [x: string]: any
 } & MarginProps>
 
 export default ({
   children, onClick, disabled, submit,
   m, mx, my, ml, mr, mt, mb,
-  color = 'accent'
+  color = 'accent',
+  ...props
 }: Props) => (
-    <button type={submit ? 'submit' : 'button'} onClick={onClick} disabled={disabled}>
+    <button type={submit ? 'submit' : 'button'} onClick={onClick} disabled={disabled} {...props}>
       {children}
 
       <style jsx>{`

@@ -1,4 +1,4 @@
-import { PropsWithChildren, ComponentType, SVGProps } from 'react'
+import { ComponentType, SVGProps } from 'react'
 import { MarginProps } from '../lib/types'
 import { getSpaceStyles } from '../lib/stylegen'
 

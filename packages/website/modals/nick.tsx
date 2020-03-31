@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, FormEvent } from 'react'
 import Modal from 'react-modal'
 
 import Box from '../components/box'
@@ -31,7 +31,7 @@ export default ({ show, close, setNick }: Props) => {
         Change nickname
       </Text>
 
-      <form onSubmit={(event) => {
+      <Box $='form' onSubmit={(event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         setNick(tempNick)
         close()
@@ -42,7 +42,7 @@ export default ({ show, close, setNick }: Props) => {
           <Button onClick={close} color='ghost' mr={16}>Cancel</Button>
           <Button submit disabled={!tempNick}>Update</Button>
         </Box>
-      </form>
+      </Box>
     </Modal>
   )
 }

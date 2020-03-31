@@ -10,14 +10,16 @@ type Props = PropsWithChildren<{
   centered?: boolean
   noInteraction?: boolean
   uppercase?: boolean
+  [x: string]: any
 } & MarginProps>
 
 export default ({
   $ = 'p', children, size = 'md', color = 'text-normal', weight = 400,
   m, mx, my, ml, mr, mt, mb,
-  centered, noInteraction, uppercase
+  centered, noInteraction, uppercase,
+  ...props
 }: Props) => (
-    <$>
+    <$ {...props}>
       {children}
 
       <style jsx>{`

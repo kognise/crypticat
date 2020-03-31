@@ -1,4 +1,4 @@
-export type ElementName = 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'div' | 'span' | 'header' | 'footer' | 'input' | 'aside' | 'article' | 'main' | 'section'
+export type ElementName = 'h1' | 'h2' | 'h3' | 'h4' | 'p' | 'div' | 'span' | 'header' | 'footer' | 'input' | 'aside' | 'article' | 'main' | 'section' | 'form'
 export type FontSize = 'lg' | 'md' | 'sm'
 export type Color = 'heading-primary' | 'heading-secondary' | 'text-normal' | 'text-muted' | 'yellow' | 'blue'
 export type Background = 'main' | 'chat' | 'input' | 'header'

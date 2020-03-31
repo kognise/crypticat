@@ -35,7 +35,6 @@ class CrypticatClient extends EventEmitter {
     prev: null,
     df: null
   }
-  private linkedNextYet: boolean = false
   private nick: string | null = null
   private ws?: WebSocket
 
@@ -90,15 +89,13 @@ class CrypticatClient extends EventEmitter {
 
             const dir = action === 'PREV_LINK' ? 'prev' : 'next'
 
-            if (action === 'NEXT_LINK' && !this.linkedNextYet) {
-              this.linkedNextYet = true
+            if (action === 'NEXT_LINK' && !this.linkState.next) {
               this.emit('connect', payload.uid, payload.nick ?? null)
               this.sendEncrypted('prev', {
                 action: 'CONNECT',
                 payload: { uid: payload.uid, nick: payload.nick }
               })
-            } else if (this.linkedNextYet) {
-              console.log('DISCONNECTED', dir)
+            } else if (this.linkState.next) {
               assertDefined(this.linkState[dir])
               this.emit('disconnect', this.linkState[dir]?.uid, this.linkState[dir]?.nick ?? null)
               this.sendEncrypted(dir === 'prev' ? 'next' : 'prev', {
@@ -198,7 +195,6 @@ class CrypticatClient extends EventEmitter {
     this.linkState.df = null
     this.linkState.next = null
     this.linkState.prev = null
-    this.linkedNextYet = false
 
     await waitFor(this.ws, 'ROOM_READY')
   }
