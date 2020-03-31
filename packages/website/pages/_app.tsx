@@ -11,7 +11,7 @@ export default ({ Component, pageProps }: AppProps) => {
       </Head>
       <Component {...pageProps} />
 
-      <style jsx>/* CSS */  `
+      <style jsx>/* CSS */ `
         .container {
           height: 100vh;
         }

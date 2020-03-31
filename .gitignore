@@ -116,3 +116,4 @@ dist
 
 packages/*/lib/
 .now
+.DS_Store

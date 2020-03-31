@@ -4,7 +4,7 @@ This is crypticat's core client and server implementation that you can use to wr
 
 Since I didn't have a lot of time, the documentation will be in the form of a code showing off all the possible functions. I purposefully kept the scope of this library small, if you want more customization feel free to write a custom client by reading the source code.
 
-You might be looking for the [main documentation,](https://github.com/kognise/crypticat/blob/master/README.md)
+You might be looking for the [main documentation.](https://github.com/kognise/crypticat/blob/master/README.md)
 
 ## Client
 

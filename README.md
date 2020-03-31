@@ -1,6 +1,6 @@
-# Crypticat
+![crypticat](assets/main-banner.png)
 
-Crypticat is a very minimal end-to-end encrypted chat protocol/platform with emphasis on ease of usability.
+<center><em>Crypticat is a very minimal end-to-end encrypted chat protocol/platform with emphasis on ease of usability.</em></center>
 
 [Try it out here!](https://c.kognise.dev/) A public websocket server is available at `wss://u.kognise.dev/`.
 
@@ -9,7 +9,7 @@ With npm installed, you can install the cli with `npm i -g @crypticat/cli` then 
 ## Goals
 
 - It should be secure
-- Messages records shouldn't be saved
+- Message records shouldn't be stored anywhere
 - Anyone should be able to run their own server
 - It should be open-source and extensible
 - The web ui and cli should have the same usability
