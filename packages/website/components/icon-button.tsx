@@ -11,7 +11,7 @@ export default ({
     <button onClick={onClick}>
       <Icon className='icon' />
 
-      <style jsx>/* CSS */  `
+      <style jsx>{`
         button {
           ${getSpaceStyles({ m, mx, my, ml, mr, mt, mb })}
           font-size: 2rem;

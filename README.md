@@ -1,4 +1,4 @@
-![crypticat](assets/main-banner.png)
+![crypticat](https://raw.githubusercontent.com/kognise/crypticat/master/assets/main-banner.png)
 
 <center><em>Crypticat is a very minimal end-to-end encrypted chat protocol/platform with emphasis on ease of usability.</em></center>
 

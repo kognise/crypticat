@@ -22,7 +22,7 @@ export default ({
     <$ {...props}>
       {children}
 
-      <style jsx>{/* CSS */ `
+      <style jsx>{`
         ${$} {
           ${getFlexStyles({ direction, align, expand, justify, flex })}
           ${getSpaceStyles({ m, mx, my, ml, mr, mt, mb, p, px, py, pl, pr, pt, pb })}

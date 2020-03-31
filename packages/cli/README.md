@@ -1,4 +1,4 @@
-# Crypticat CLI
+![crypticat cli](https://raw.githubusercontent.com/kognise/crypticat/master/assets/cli-banner.png)
 
 This is crypticat's command-line interface. You might be looking for the [main documentation.](https://github.com/kognise/crypticat/blob/master/README.md)
 

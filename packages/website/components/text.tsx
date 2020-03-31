@@ -22,7 +22,7 @@ export default ({
     <$ {...props}>
       {children}
 
-      <style jsx>/* CSS */  `
+      <style jsx>{`
         ${$} {
           ${getSpaceStyles({ m, mx, my, ml, mr, mt, mb })}
           font-size: ${typeof size === 'number' ? `${size}rem` : `var(--font-${size})`};

@@ -55,7 +55,6 @@ export default () => {
   const scrollBottomRef = useRef<HTMLDivElement>(null)
 
   const joinRoom = async (newRoom: string, thisClient: CrypticatClient | null = client) => {
-    console.log(thisClient?.getNick())
     setMessageGroups([])
     setMissed(0)
     if (!thisClient) return setRoom('lobby')

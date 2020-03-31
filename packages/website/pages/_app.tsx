@@ -3,88 +3,94 @@ import '../reset.css'
 import Head from 'next/head'
 import { AppProps } from 'next/app'
 
-export default ({ Component, pageProps }: AppProps) => {
-  return (
-    <div className='dark-theme container'>
-      <Head>
-        <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap' rel='stylesheet' />
-      </Head>
-      <Component {...pageProps} />
+export default ({ Component, pageProps }: AppProps) => (
+  <div className='dark-theme container'>
+    <Head>
+      <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap' rel='stylesheet' />
 
-      <style jsx>/* CSS */ `
-        .container {
-          height: 100vh;
-        }
-      `}</style>
+      <link href='/icon.png' rel='icon' />
+      <link href='/icon.png' rel='shortcut icon' />
+      <link href='/icon.png' rel='favicon' />
 
-      <style jsx global>{`
-        .dark-theme {
-          --heading-primary: #FFFFFF;
-          --heading-secondary: #B9BBBE;
+      <link href='/icon.svg' rel='icon' />
+      <link href='/icon.svg' rel='shortcut icon' />
+      <link href='/icon.svg' rel='favicon' />
+    </Head>
+    <Component {...pageProps} />
 
-          --text-normal: #DDDDDD;
-          --text-muted: #72767D;
+    <style jsx>{`
+      .container {
+        height: 100vh;
+      }
+    `}</style>
 
-          --background-main: #16171A;
-          --background-chat: #202225;
-          --background-input: #272A2E;
-          --background-header: #16171A;
+    <style jsx global>{`
+      .dark-theme {
+        --heading-primary: #FFFFFF;
+        --heading-secondary: #B9BBBE;
 
-          --interactive-normal: #B9BBBE;
-          --interactive-hover: #FFFFFF;
+        --text-normal: #DDDDDD;
+        --text-muted: #72767D;
 
-          --ghost: #272A2E;
-          --accent: #3F51B5;
-          --yellow: #FFE066;
-          --blue: #74C0FC;
-        }
+        --background-main: #16171A;
+        --background-chat: #202225;
+        --background-input: #272A2E;
+        --background-header: #16171A;
 
-        body {
-          font-family: 'Inter', sans-serif;
+        --interactive-normal: #B9BBBE;
+        --interactive-hover: #FFFFFF;
 
-          --radius-lg: 8px;
-          --radius-sm: 4px;
+        --ghost: #272A2E;
+        --accent: #3F51B5;
+        --yellow: #FFE066;
+        --blue: #74C0FC;
+      }
 
-          --font-scale: 1;
-          --font-lg: calc(2rem * var(--font-scale));
-          --font-md: calc(1rem * var(--font-scale));
-          --font-sm: calc(0.875rem * var(--font-scale));
+      body {
+        font-family: 'Inter', sans-serif;
 
-          --field-height: calc(2.25rem * var(--font-scale));
-        }
+        --radius-lg: 8px;
+        --radius-sm: 4px;
 
-        .ReactModal__Content {
-          background-color: var(--background-main);
-          border-radius: var(--radius-lg);
-          padding: 16px;
-          max-width: 440px;
-          width: 100%;
-          box-sizing: border-box;
-        }
+        --font-scale: 1;
+        --font-lg: calc(2rem * var(--font-scale));
+        --font-md: calc(1rem * var(--font-scale));
+        --font-sm: calc(0.875rem * var(--font-scale));
 
-        .ReactModal__Overlay {
-          position: fixed;
-          top: 0px;
-          left: 0px;
-          right: 0px;
-          bottom: 0px;
-          background-color: rgba(0, 0, 0, 0.85);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          opacity: 0;
-          transition: opacity 200ms ease-in;
-        }
+        --field-height: calc(2.25rem * var(--font-scale));
+      }
 
-        .ReactModal__Overlay--after-open{
-          opacity: 1;
-        }
+      .ReactModal__Content {
+        background-color: var(--background-main);
+        border-radius: var(--radius-lg);
+        padding: 16px;
+        max-width: 440px;
+        width: 100%;
+        box-sizing: border-box;
+      }
 
-        .ReactModal__Overlay--before-close{
-          opacity: 0;
-        }
-      `}</style>
-    </div>
-  )
-}
+      .ReactModal__Overlay {
+        position: fixed;
+        top: 0px;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        background-color: rgba(0, 0, 0, 0.85);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 200ms ease-in;
+      }
+
+      .ReactModal__Overlay--after-open{
+        opacity: 1;
+      }
+
+      .ReactModal__Overlay--before-close{
+        opacity: 0;
+      }
+    `}</style>
+  </div>
+)

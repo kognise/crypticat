@@ -1,4 +1,4 @@
-# Crypticat Core
+![crypticat core](https://raw.githubusercontent.com/kognise/crypticat/master/assets/core-banner.png)
 
 This is crypticat's core client and server implementation that you can use to write your own client or host your own server programmatically!
 
