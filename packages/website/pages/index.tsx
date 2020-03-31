@@ -172,6 +172,7 @@ export default () => {
             setConnecting(true)
 
             await newClient.connect(address)
+            newClient.setNick(nick)
             await joinRoom('lobby', newClient)
 
             setConnecting(false)
@@ -250,7 +251,7 @@ export default () => {
               <Box flex mb={16} key={uid} align='center'>
                 <Text color='heading-primary' size={2}><Icon display='block' /></Text>
                 <Text color='text-normal' ml={8}>
-                  <Text $='span' color='blue'>{nick}</Text> {joined ? 'joined' : 'left'} the room
+                  {nick ? (<Text $='span' color='blue'>{nick}</Text>) : 'someone'} {joined ? 'joined' : 'left'} the room
                 </Text>
               </Box>
             )
