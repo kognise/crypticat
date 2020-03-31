@@ -40,7 +40,7 @@ const isJol = (thing: any): thing is JoinOrLeave => thing.uid && thing.userUid &
 const isMessageGroup = (thing: any): thing is MessageGroup => thing.uid && thing.userUid && thing.you !== undefined && thing.messages
 
 export default () => {
-  const [address, setAddress] = useState('ws://localhost:8080')
+  const [address, setAddress] = useState('wss://u.kognise.dev')
   const [client, setClient] = useState<CrypticatClient | null>(null)
   const [connecting, setConnecting] = useState(false)
 

@@ -10,7 +10,7 @@ const go = async () => {
     go(parseInt(args[2]) || 8080)
   } else {
     const { go } = await import('./client')
-    go(args[1] ?? 'ws://localhost:8080')
+    go(args[1] ?? 'wss://u.kognise.dev')
   }
 }
 
