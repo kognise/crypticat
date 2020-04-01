@@ -10,7 +10,7 @@
     "dev": "next"
   },
   "dependencies": {
-    "@crypticat/core": "^0.2.11",
+    "@crypticat/core": "^0.2.12",
     "@crypticat/ionicons": "^0.1.5",
     "next": "^9.3.3",
     "next-offline": "^5.0.0",

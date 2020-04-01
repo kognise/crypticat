@@ -60,8 +60,8 @@ class CrypticatServer extends EventEmitter {
 
       let lastPong = Date.now()
       const pongCheckInterval = setInterval(() => {
-        if (Date.now() - lastPong > 5000) ws.close()
-      }, 5000)
+        if (Date.now() - lastPong > 6666) ws.close()
+      }, 6666)
 
       const leaveRoom = async () => {
         assertDefined(room)
