@@ -29,7 +29,11 @@ export default ({
           background-color: ${background ? `var(--background-${background})` : 'transparent'};
           ${fullHeight ? 'height: 100%;' : ''}
           ${fullWidth ? 'width: 100%;' : ''}
-          ${scrollfix ? 'overflow: scroll;' : ''}
+          ${scrollfix ? `
+            overflow: hidden;
+            overflow-y: auto;
+            word-wrap: break-word;
+          ` : ''}
         }
       `}</style>
     </$>

@@ -15,7 +15,7 @@
   ],
   "background_color": "#202225",
   "description": "A dead simple end-to-end encrypted chat platform.",
-  "display": "fullscreen",
+  "display": "standalone",
   "start_url": "/",
   "theme_color": "#16171A"
 }
