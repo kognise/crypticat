@@ -14,7 +14,7 @@ export default ({
       <style jsx>{`
         button {
           ${getSpaceStyles({ m, mx, my, ml, mr, mt, mb })}
-          font-size: 2rem;
+          font-size: 1.8rem;
 
           color: var(--interactive-normal);
           background: none;
