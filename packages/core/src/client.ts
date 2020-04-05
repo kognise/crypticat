@@ -235,6 +235,18 @@ class CrypticatClient extends EventEmitter {
     return this.nick
   }
 
+  close() {
+    this.assertWs(this.ws)
+    this.ws.close()
+
+    this.linkState.df = null
+    this.linkState.next = null
+    this.linkState.prev = null
+
+    this.nick = null
+    this.ws = undefined
+  }
+
   private assertWs(ws?: WebSocket): asserts ws is NonNullable<WebSocket> {
     if (ws?.readyState !== 1) {
       throw new AssertionError({

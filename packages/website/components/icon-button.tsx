@@ -24,6 +24,8 @@ export default ({
           display: block;
           box-sizing: border-box;
           transition: color 120ms ease-in;
+
+          -webkit-tap-highlight-color: transparent;
         }
 
         button:hover {

@@ -2,11 +2,13 @@ import Head from 'next/head'
 import { useState, useEffect, useRef, FormEvent } from 'react'
 import { CrypticatClient } from '@crypticat/core'
 import createUid from 'uid-promise'
+import { useOnlineState } from '../lib/hooks'
 
 import NickIcon from '@crypticat/ionicons/lib/at-outline'
 import RoomIcon from '@crypticat/ionicons/lib/swap-horizontal-outline'
 import JoinIcon from '@crypticat/ionicons/lib/arrow-forward-outline'
 import LeaveIcon from '@crypticat/ionicons/lib/arrow-back-outline'
+import OfflineIcon from '@crypticat/ionicons/lib/cloud-offline'
 
 import Box from '../components/box'
 import Text from '../components/text'
@@ -40,6 +42,8 @@ const isJol = (thing: any): thing is JoinOrLeave => thing.uid && thing.userUid &
 const isMessageGroup = (thing: any): thing is MessageGroup => thing.uid && thing.userUid && thing.you !== undefined && thing.messages
 
 export default () => {
+  const isOnline = useOnlineState()
+
   const [address, setAddress] = useState('wss://u.kognise.dev')
   const [client, setClient] = useState<CrypticatClient | null>(null)
   const [connecting, setConnecting] = useState(false)
@@ -52,6 +56,8 @@ export default () => {
   const [showNickModal, setShowNickModal] = useState(false)
   const [showRoomModal, setShowRoomModal] = useState(false)
 
+  // Store a ref to a certain element so we can easily scroll
+  // to the bottom of the chat window.
   const scrollBottomRef = useRef<HTMLDivElement>(null)
 
   const joinRoom = async (newRoom: string, thisClient: CrypticatClient | null = client) => {
@@ -103,6 +109,9 @@ export default () => {
     if (document.hidden) setMissed((missed) => missed + 1)
   }
 
+  // Update unread message count when a message is recieved
+  // and the tab is unfocused. Clear the count when the tab
+  // is focused again.
   useEffect(() => {
     const address = localStorage.getItem('address')
     const nick = localStorage.getItem('nick')
@@ -115,6 +124,7 @@ export default () => {
     return () => document.removeEventListener('visibilitychange', listener)
   }, [])
 
+  // Store the nickname in local storage.
   useEffect(() => {
     client?.setNick(nick)
     if (nick) {
@@ -124,8 +134,10 @@ export default () => {
     }
   }, [client, nick])
 
+  // Store the server address in local storage.
   useEffect(() => localStorage.setItem('address', address), [address])
 
+  // Set the room and add listeners when the client changes.
   useEffect(() => {
     if (!client) return
     setRoom('lobby')
@@ -137,6 +149,43 @@ export default () => {
     client.on('close', () => setClient(null))
     return () => { client.removeAllListeners() }
   }, [client])
+
+  // Close the client when the user goes offline.
+  useEffect(() => {
+    if (!isOnline) client?.close()
+  }, [isOnline])
+
+  if (!isOnline) {
+    return (
+      <Box flex direction='column' fullHeight>
+        <Head>
+          <title>disconnected</title>
+        </Head>
+
+        <Box $='header' flex background='header' px={24} py={16}>
+          <Text $='h1' weight={700} color='heading-primary' mr={8} noInteraction>
+            internet disconnected
+          </Text>
+        </Box>
+
+        <Box flex direction='column' expand background='chat' align='center' justify='center' p={24}>
+          <Box mb={16}>
+            <Text color='text-muted' size={5}>
+              <OfflineIcon display='block' fill='currentColor' />
+            </Text>
+          </Box>
+
+          <Text size='lg' weight={700} color='heading-primary' centered mb={16} noInteraction>
+            You're offline!
+          </Text>
+
+          <Text color='heading-secondary' centered noInteraction>
+            Crypticat should automatically refresh when your internet connection returns.
+          </Text>
+        </Box>
+      </Box>
+    )
+  }
 
   if (!client) {
     return (
@@ -175,6 +224,7 @@ export default () => {
             await joinRoom('lobby', newClient)
 
             setConnecting(false)
+
             setClient(newClient)
 
             if (!nick) setShowNickModal(true)

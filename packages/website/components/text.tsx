@@ -31,6 +31,7 @@ export default ({
           text-align: ${centered ? 'center' : 'left'};
           ${noInteraction ? 'pointer-events: none; user-select: none;' : ''}
           text-transform: ${uppercase ? 'uppercase' : 'none'};
+          line-height: 1.4;
         }
       `}</style>
     </$>

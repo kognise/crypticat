@@ -38,6 +38,7 @@ export default ({
           vertical-align: middle;
 
           transition: filter 120ms ease-in;
+          -webkit-tap-highlight-color: transparent;
         }
 
         button[disabled] {
