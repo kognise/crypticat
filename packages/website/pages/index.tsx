@@ -289,7 +289,7 @@ export default () => {
               <Box mb={16} key={uid}>
                 <Text weight={500} color={you ? 'yellow' : 'blue'}>{nick ?? 'unnicked'}</Text>
                 {messages.map(({ content, uid }) => (
-                  <Text color='text-normal' mt={8} key={uid}>{content}</Text>
+                  <Text color='text-normal' mt={4} key={uid}>{content}</Text>
                 ))}
               </Box>
             )
