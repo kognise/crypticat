@@ -1,9 +1,12 @@
 import Head from 'next/head'
+import ReactMarkdown from 'react-markdown'
 import { useState, useEffect, useRef, FormEvent } from 'react'
 import { CrypticatClient } from '@crypticat/core'
 import createUid from 'uid-promise'
 import { useOnlineState } from '../lib/hooks'
-
+import underline from 'remark-underline' // writing a d.ts
+// oof. i've never written one manually
+// don't bother I just went the lazy way
 import NickIcon from '@crypticat/ionicons/lib/at-outline'
 import RoomIcon from '@crypticat/ionicons/lib/swap-horizontal-outline'
 import JoinIcon from '@crypticat/ionicons/lib/arrow-forward-outline'
@@ -289,7 +292,25 @@ export default () => {
               <Box mb={16} key={uid}>
                 <Text weight={500} color={you ? 'yellow' : 'blue'}>{nick ?? 'unnicked'}</Text>
                 {messages.map(({ content, uid }) => (
-                  <Text color='text-normal' mt={4} key={uid}>{content}</Text>
+                  <Text color='text-normal' mt={4} key={uid} $="div">
+                    <ReactMarkdown
+                      linkTarget='_blank'
+                      allowedTypes={[
+                        'text',
+                        'root',
+                        'paragraph',
+                        'emphasis',
+                        'strong',
+                        'delete',
+                        'inlineCode',
+                        'link'
+                      ]}
+                      // plugins={[ [ underline ] ]}
+                      className='message-markdown'
+                    >
+                      {content}
+                    </ReactMarkdown>
+                  </Text>
                 ))}
               </Box>
             )

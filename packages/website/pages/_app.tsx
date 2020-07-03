@@ -6,7 +6,8 @@ import { AppProps } from 'next/app'
 export default ({ Component, pageProps }: AppProps) => (
   <div className='dark-theme container'>
     <Head>
-      <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap' rel='stylesheet' />
+      <link href='https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;400i;700i&display=swap' rel='stylesheet' />
+      <link href='https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;700&display=swap' rel='stylesheet' />
 
       <link href='/icon.png' rel='icon' />
       <link href='/icon.png' rel='shortcut icon' />
@@ -16,11 +17,11 @@ export default ({ Component, pageProps }: AppProps) => (
       <link href='/icon.svg' rel='shortcut icon' />
       <link href='/icon.svg' rel='favicon' />
 
-      <link rel="manifest" href="/manifest.json" />
-      <meta name="theme-color" content="#16171A" />
+      <link rel='manifest' href='/manifest.json' />
+      <meta name='theme-color' content='#16171A' />
       <meta
-        name="description"
-        content="A dead simple end-to-end encrypted chat platform."
+        name='description'
+        content='A dead simple end-to-end encrypted chat platform.'
       />
     </Head>
     <Component {...pageProps} />
@@ -67,6 +68,10 @@ export default ({ Component, pageProps }: AppProps) => (
         --field-height: calc(2.25rem * var(--font-scale));
       }
 
+      pre, code {
+        font-family: 'Fira Code', monospace;
+      }
+
       .ReactModal__Content {
         background-color: var(--background-main);
         border-radius: var(--radius-lg);
@@ -97,6 +102,30 @@ export default ({ Component, pageProps }: AppProps) => (
 
       .ReactModal__Overlay--before-close{
         opacity: 0;
+      }
+
+      .message-markdown code {
+        background-color: var(--background-main);
+        padding: 2px;
+        border-radius: 2px 4px;
+        color: var(--yellow);
+      }
+
+      .message-markdown strong {
+        font-weight: 700;
+      }
+
+      .message-markdown em {
+        font-style: italic;
+      }
+
+      .message-markdown a {
+        color: var(--blue);
+        text-decoration: none;
+      }
+
+      .message-markdown a:hover {
+        text-decoration: underline;
       }
     `}</style>
   </div>

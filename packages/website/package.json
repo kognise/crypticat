@@ -16,7 +16,9 @@
     "next-offline": "^5.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-markdown": "^4.3.1",
     "react-modal": "^3.11.2",
+    "remark-underline": "^1.0.3",
     "uid-promise": "^1.1.0"
   },
   "devDependencies": {
