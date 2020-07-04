@@ -37,7 +37,6 @@ export default ({ $="div", inlineAllowed=[], blockAllowed=[], linkify, children 
   if(linkify) {
     md.enable('linkify')
     md.linkify.set({ fuzzyLink: false, fuzzyEmail: false })
-    md.linkify.add('mailto:', null as any)
   }
   
   const parsed = md.render(children?.toString() || '')
