@@ -1,18 +1,17 @@
 import Head from 'next/head'
-import ReactMarkdown from 'react-markdown'
 import { useState, useEffect, useRef, FormEvent } from 'react'
 import { CrypticatClient } from '@crypticat/core'
 import createUid from 'uid-promise'
 import { useOnlineState } from '../lib/hooks'
-import underline from 'remark-underline' // writing a d.ts
-// oof. i've never written one manually
-// don't bother I just went the lazy way
+import underline from 'remark-underline'
+
 import NickIcon from '@crypticat/ionicons/lib/at-outline'
 import RoomIcon from '@crypticat/ionicons/lib/swap-horizontal-outline'
 import JoinIcon from '@crypticat/ionicons/lib/arrow-forward-outline'
 import LeaveIcon from '@crypticat/ionicons/lib/arrow-back-outline'
 import OfflineIcon from '@crypticat/ionicons/lib/cloud-offline'
 
+import ReactMarkdown from '../components/react-markdown'
 import Box from '../components/box'
 import Text from '../components/text'
 import Input from '../components/input'
@@ -294,19 +293,17 @@ export default () => {
                 {messages.map(({ content, uid }) => (
                   <Text color='text-normal' mt={4} key={uid} $="div">
                     <ReactMarkdown
-                      linkTarget='_blank'
-                      allowedTypes={[
+                      // linkTarget='_blank'
+                   
+                      inlineAllowed={[
                         'text',
-                        'root',
-                        'paragraph',
+                        'backticks',
                         'emphasis',
-                        'strong',
-                        'delete',
-                        'inlineCode',
-                        'link'
+                        'link',
+                        'strikethrough'
                       ]}
-                      // plugins={[ [ underline ] ]}
-                      className='message-markdown'
+                      // // plugins={[ [ underline ] ]}
+                      // className='message-markdown'
                     >
                       {content}
                     </ReactMarkdown>

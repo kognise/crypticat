@@ -12,13 +12,14 @@
   "dependencies": {
     "@crypticat/core": "^0.2.13",
     "@crypticat/ionicons": "^0.1.5",
+    "@types/markdown-it": "^10.0.1",
+    "markdown-it": "^11.0.0",
+    "markdown-it-underline": "^1.0.1",
     "next": "^9.3.3",
     "next-offline": "^5.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-markdown": "^4.3.1",
     "react-modal": "^3.11.2",
-    "remark-underline": "^1.0.3",
     "uid-promise": "^1.1.0"
   },
   "devDependencies": {
