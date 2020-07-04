@@ -4323,6 +4323,11 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
+markdown-it-link-attributes@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/markdown-it-link-attributes/-/markdown-it-link-attributes-3.0.0.tgz#12d6f403102ac22695ee2617bec109ee79426e45"
+  integrity sha512-B34ySxVeo6MuEGSPCWyIYryuXINOvngNZL87Mp7YYfKIf6DcD837+lXA8mo6EBbauKsnGz22ZH0zsbOiQRWTNg==
+
 markdown-it-underline@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/markdown-it-underline/-/markdown-it-underline-1.0.1.tgz#43a54a541d95d739b43157701f1da306d7c300b2"

@@ -301,6 +301,7 @@ export default () => {
                         'link',
                         'strikethrough'
                       ]}
+                      linkify={true}
                       // // plugins={[ [ underline ] ]}
                       // className='message-markdown'
                     >
