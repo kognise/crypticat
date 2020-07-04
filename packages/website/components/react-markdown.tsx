@@ -3,8 +3,12 @@ import { ElementName } from '../lib/types'
 import { getSpaceStyles } from '../lib/stylegen'
 
 import markdown from 'markdown-it'
-import underline from 'markdown-it-underline'
 import mila from 'markdown-it-link-attributes'
+import emoji from 'markdown-it-emoji'
+
+// Custom plugins
+import underline from '../lib/plugins/underline'
+
 
 type InlineTypes = 'text' | 'newline' | 'escape' | 'backticks' | 'strikethrough' | 'emphasis' | 'link' | 'image' | 'autolink' | 'html_inline' | 'entity'
 type BlockTypes = 'table' | 'code' | 'fence' | 'blockquote' | 'hr' | 'list' | 'reference' | 'heading' | 'lheading' | 'html_block' | 'paragraph'
@@ -22,6 +26,7 @@ export default ({ $="div", inlineAllowed=[], blockAllowed=[], linkify, children 
     linkify
   })
   .use(underline)
+  .use(emoji)
   .use(mila, {
     attrs: {
       target: '_blank',
