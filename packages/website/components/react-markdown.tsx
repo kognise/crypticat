@@ -12,7 +12,6 @@ type Props = PropsWithChildren<{
   $?: ElementName;
   inlineAllowed?: InlineTypes[];
   blockAllowed?: BlockTypes[];
-  [x: string]: any;
 }>
 
 
@@ -22,8 +21,8 @@ export default ({ $="div", inlineAllowed=[], blockAllowed=[], children }: Props)
 
   const parsed = md.render(children?.toString() || '')
   return (
-  <$ className="message-markdown" dangerouslySetInnerHTML={{
-    __html: parsed
-  }} />
+    <$ className="message-markdown" dangerouslySetInnerHTML={{
+      __html: parsed
+    }} />
   )
 }

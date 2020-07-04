@@ -3,7 +3,6 @@ import { useState, useEffect, useRef, FormEvent } from 'react'
 import { CrypticatClient } from '@crypticat/core'
 import createUid from 'uid-promise'
 import { useOnlineState } from '../lib/hooks'
-import underline from 'remark-underline'
 
 import NickIcon from '@crypticat/ionicons/lib/at-outline'
 import RoomIcon from '@crypticat/ionicons/lib/swap-horizontal-outline'
