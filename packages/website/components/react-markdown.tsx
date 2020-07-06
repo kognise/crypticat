@@ -1,6 +1,7 @@
 import { PropsWithChildren, Children } from 'react'
-import { ElementName } from '../lib/types'
 import { getSpaceStyles } from '../lib/stylegen'
+import { ElementName } from '../lib/types'
+
 
 import markdown from 'markdown-it'
 import mila from 'markdown-it-link-attributes'
