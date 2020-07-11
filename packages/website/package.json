@@ -12,6 +12,10 @@
   "dependencies": {
     "@crypticat/core": "^0.2.13",
     "@crypticat/ionicons": "^0.1.5",
+    "@types/markdown-it": "^10.0.1",
+    "markdown-it": "^11.0.0",
+    "markdown-it-emoji": "^1.4.0",
+    "markdown-it-link-attributes": "^3.0.0",
     "next": "^9.3.3",
     "next-offline": "^5.0.0",
     "react": "^16.13.1",
