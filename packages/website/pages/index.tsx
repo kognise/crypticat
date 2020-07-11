@@ -10,7 +10,7 @@ import JoinIcon from '@crypticat/ionicons/lib/arrow-forward-outline'
 import LeaveIcon from '@crypticat/ionicons/lib/arrow-back-outline'
 import OfflineIcon from '@crypticat/ionicons/lib/cloud-offline'
 
-import ReactMarkdown from '../components/react-markdown'
+import Markdown, { InlineTypes } from '../components/markdown'
 import Box from '../components/box'
 import Text from '../components/text'
 import Input from '../components/input'
@@ -41,6 +41,14 @@ interface JoinOrLeave {
 
 const isJol = (thing: any): thing is JoinOrLeave => thing.uid && thing.userUid && !thing.messages && !thing.content && thing.joined !== undefined
 const isMessageGroup = (thing: any): thing is MessageGroup => thing.uid && thing.userUid && thing.you !== undefined && thing.messages
+
+const markdownInnerAllowed: InlineTypes[] = [
+  'text',
+  'backticks',
+  'emphasis',
+  'link',
+  'strikethrough'
+]
 
 export default () => {
   const isOnline = useOnlineState()
@@ -290,23 +298,13 @@ export default () => {
               <Box mb={16} key={uid}>
                 <Text weight={500} color={you ? 'yellow' : 'blue'}>{nick ?? 'unnicked'}</Text>
                 {messages.map(({ content, uid }) => (
-                  <Text color='text-normal' mt={4} key={uid} $="div">
-                    <ReactMarkdown
-                      // linkTarget='_blank'
-                   
-                      inlineAllowed={[
-                        'text',
-                        'backticks',
-                        'emphasis',
-                        'link',
-                        'strikethrough'
-                      ]}
+                  <Text color='text-normal' mt={4} key={uid} $='div'>
+                    <Markdown
+                      className='message-markdown'
+                      inlineAllowed={markdownInnerAllowed}
                       linkify={true}
-                      // // plugins={[ [ underline ] ]}
-                      // className='message-markdown'
-                    >
-                      {content}
-                    </ReactMarkdown>
+                      text={content}
+                    />
                   </Text>
                 ))}
               </Box>
