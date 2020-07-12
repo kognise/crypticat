@@ -16,7 +16,6 @@
     "markdown-it": "^11.0.0",
     "markdown-it-emoji": "^1.4.0",
     "markdown-it-link-attributes": "^3.0.0",
-    "markdown-it-underline": "^1.0.1",
     "next": "^9.3.3",
     "next-offline": "^5.0.0",
     "react": "^16.13.1",
