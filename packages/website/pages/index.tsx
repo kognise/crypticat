@@ -17,7 +17,7 @@ import Input from '../components/input'
 import Button from '../components/button'
 import ChatInput from '../components/chat-input'
 import IconButton from '../components/icon-button'
-import TypingIndicator from '../components/typing-indicator';
+import TypingIndicator, { TypingUser } from '../components/typing-indicator';
 
 import NickModal from '../modals/nick'
 import RoomModal from '../modals/room'
@@ -68,7 +68,7 @@ export default () => {
 
   const [typing, setTyping] = useState(false)
 
-  const [typingUsers, setTypingUsers] = useState<string[]>([])
+  const [typingUsers, setTypingUsers] = useState<TypingUser[]>([])
   // Store a ref to a certain element so we can easily scroll
   // to the bottom of the chat window.
   const scrollBottomRef = useRef<HTMLDivElement>(null)
@@ -157,24 +157,16 @@ export default () => {
 
     client.on('message', (userUid, nick, content) => addMessage(userUid, nick, content, false))
 
-    client.on('typing', (nick: string | null) => {
+    client.on('typing', (userUid: string, nick: string | null) => {
       if (typeof nick === 'string') {
-        setTypingUsers((typingUsers) => [ ...typingUsers, nick ])
+        setTypingUsers((typingUsers) => [ ...typingUsers, { nick, id: userUid }])
       }
     })
 
-    client.on('stopTyping', (nick: string | null) => {
+    client.on('stopTyping', (userUid: string, nick: string | null) => {
       if (typeof nick === 'string') {
         setTypingUsers((typingUsers) => {
-          const index = typingUsers.indexOf(nick)
-          console.log(nick, 'stop typing', index, typingUsers)
-
-          if (index > -1) return [
-            ...typingUsers.slice(0, index),
-            ...typingUsers.slice(index + 1)
-          ]
-
-          return typingUsers
+          return typingUsers.filter(({ id }) => id != userUid)
         })
       }
     })
@@ -255,7 +247,6 @@ export default () => {
             if (connecting) return
             const newClient = new CrypticatClient()
             setConnecting(true)
-
             await newClient.connect(address)
             newClient.setNick(nick)
             await joinRoom('lobby', newClient)
@@ -263,7 +254,6 @@ export default () => {
             setConnecting(false)
 
             setClient(newClient)
-
             if (!nick) setShowNickModal(true)
           }}>
             <Input placeholder='WebSocket address' value={address} onChange={setAddress} mr={16} />

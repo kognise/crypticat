@@ -5,7 +5,10 @@ import Text from './text'
 // interface TypingUser {
 //   nick: string
 // }
-type TypingUser = string
+export type TypingUser = {
+  nick: string;
+  id: string;
+}
 interface Props {
   typingUsers?: TypingUser[]
 }
@@ -43,7 +46,7 @@ const getTypingText = (nicknames: string[]) => {
 }
 
 export default ({ typingUsers = [] }: Props) => {
-  const typingText = useMemo(() => getTypingText(typingUsers), [ typingUsers ])
+  const typingText = useMemo(() => getTypingText(typingUsers.map(({nick}) => nick)), [ typingUsers ])
 
   if (typingUsers.length > 0) {
     return (

@@ -22,8 +22,8 @@ const iv = Buffer.alloc(16, 0)
 
 declare interface CrypticatClient {
   on(event: 'message', listener: (userUid: string, nick: string | null, content: string) => void): this
-  on(event: 'typing', listener: (nick: string | null) => void): this
-  on(event: 'stopTyping', listener: (nick: string | null) => void): this
+  on(event: 'typing', listener: (userUid: string, nick: string | null) => void): this
+  on(event: 'stopTyping', listener: (userUid: string, nick: string | null) => void): this
   on(event: 'close', listener: () => void): this
   on(event: 'error', listener: (error: Error) => void): this
   on(event: 'connect', listener: (uid: string, nick: string | null) => void): this
@@ -171,12 +171,14 @@ class CrypticatClient extends EventEmitter {
                 }
 
                 case 'TYPING': {
-                  this.emit('typing', payload.nick || null)
+                  assertDefined(originalFrom)
+                  this.emit('typing', originalFrom, payload.nick ?? null)
                   break
                 }
 
                 case 'STOP_TYPING': {
-                  this.emit('stopTyping', payload.nick || null)
+                  assertDefined(originalFrom)
+                  this.emit('stopTyping', originalFrom, payload.nick ?? null)
                   break
                 }
               }
