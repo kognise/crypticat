@@ -22,9 +22,10 @@ const iv = Buffer.alloc(16, 0)
 
 declare interface CrypticatClient {
   on(event: 'message', listener: (userUid: string, nick: string | null, content: string) => void): this
+  on(event: 'typing', listener: (userUid: string, nick: string | null) => void): this
+  on(event: 'stopTyping', listener: (userUid: string, nick: string | null) => void): this
   on(event: 'close', listener: () => void): this
   on(event: 'error', listener: (error: Error) => void): this
-
   on(event: 'connect', listener: (uid: string, nick: string | null) => void): this
   on(event: 'disconnect', listener: (uid: string, nick: string | null) => void): this
 }
@@ -168,6 +169,18 @@ class CrypticatClient extends EventEmitter {
                   this.emit('disconnect', payload.uid, payload.nick ?? null)
                   break
                 }
+
+                case 'TYPING': {
+                  assertDefined(originalFrom)
+                  this.emit('typing', originalFrom, payload.nick ?? null)
+                  break
+                }
+
+                case 'STOP_TYPING': {
+                  assertDefined(originalFrom)
+                  this.emit('stopTyping', originalFrom, payload.nick ?? null)
+                  break
+                }
               }
             }
 
@@ -223,6 +236,40 @@ class CrypticatClient extends EventEmitter {
       this.sendEncrypted('prev', {
         action: 'MESSAGE',
         payload: { content, nick: this.nick }
+      })
+    }
+  }
+  startTyping() {
+    this.assertWs(this.ws)
+
+    if (this.linkState.next) {
+      this.sendEncrypted('next', {
+        action: 'TYPING',
+        payload: { nick: this.nick }
+      })
+    }
+
+    if (this.linkState.prev) {
+      this.sendEncrypted('prev', {
+        action: 'TYPING',
+        payload: { nick: this.nick }
+      })
+    }
+  }
+  stopTyping() {
+    this.assertWs(this.ws)
+
+    if (this.linkState.next) {
+      this.sendEncrypted('next', {
+        action: 'STOP_TYPING',
+        payload: { nick: this.nick }
+      })
+    }
+
+    if (this.linkState.prev) {
+      this.sendEncrypted('prev', {
+        action: 'STOP_TYPING',
+        payload: { nick: this.nick }
       })
     }
   }

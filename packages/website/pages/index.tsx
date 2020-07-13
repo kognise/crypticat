@@ -17,6 +17,7 @@ import Input from '../components/input'
 import Button from '../components/button'
 import ChatInput from '../components/chat-input'
 import IconButton from '../components/icon-button'
+import TypingIndicator, { TypingUser } from '../components/typing-indicator';
 
 import NickModal from '../modals/nick'
 import RoomModal from '../modals/room'
@@ -65,6 +66,9 @@ export default () => {
   const [showNickModal, setShowNickModal] = useState(false)
   const [showRoomModal, setShowRoomModal] = useState(false)
 
+  const [typing, setTyping] = useState(false)
+
+  const [typingUsers, setTypingUsers] = useState<TypingUser[]>([])
   // Store a ref to a certain element so we can easily scroll
   // to the bottom of the chat window.
   const scrollBottomRef = useRef<HTMLDivElement>(null)
@@ -152,10 +156,26 @@ export default () => {
     setRoom('lobby')
 
     client.on('message', (userUid, nick, content) => addMessage(userUid, nick, content, false))
+
+    client.on('typing', (userUid: string, nick: string | null) => {
+      if (typeof nick === 'string') {
+        setTypingUsers((typingUsers) => [ ...typingUsers, { nick, id: userUid }])
+      }
+    })
+
+    client.on('stopTyping', (userUid: string, nick: string | null) => {
+      if (typeof nick === 'string') {
+        setTypingUsers((typingUsers) => {
+          return typingUsers.filter(({ id }) => id != userUid)
+        })
+      }
+    })
+  
     client.on('connect', async (userUid, nick) => addJol(userUid, nick, true))
     client.on('disconnect', async (userUid, nick) => addJol(userUid, nick, false))
-
+    
     client.on('close', () => setClient(null))
+  
     return () => { client.removeAllListeners() }
   }, [client])
 
@@ -227,7 +247,6 @@ export default () => {
             if (connecting) return
             const newClient = new CrypticatClient()
             setConnecting(true)
-
             await newClient.connect(address)
             newClient.setNick(nick)
             await joinRoom('lobby', newClient)
@@ -235,7 +254,6 @@ export default () => {
             setConnecting(false)
 
             setClient(newClient)
-
             if (!nick) setShowNickModal(true)
           }}>
             <Input placeholder='WebSocket address' value={address} onChange={setAddress} mr={16} />
@@ -325,11 +343,21 @@ export default () => {
 
         <div aria-hidden ref={scrollBottomRef} />
       </Box>
-
+      <TypingIndicator typingUsers={typingUsers}/>
       <ChatInput room={room} onSend={async (content) => {
         client.sendMessage(content)
         addMessage('_', nick ?? 'unnicked', content, true)
-      }} />
+        setTyping(false)
+        client.stopTyping()
+      }} onType={(empty) => {
+        if(empty === true && typing === true) {
+          client.stopTyping()
+          setTyping(false)
+        } else if(empty === false && typing === false) {
+          client.startTyping()
+          setTyping(true)
+        }
+      }}/>
     </Box>
   )
 }
