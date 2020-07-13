@@ -48,7 +48,7 @@ const go = async () => {
 
     console.log(`Converting ${chalk.cyan(svg)} to a React component`)
 
-    const js = await svgr(file.object.text, {
+    const js = await svgr(file.object.text.replace(/enable-background:(.+?);/g, ''), {
       plugins: [
         '@svgr/plugin-jsx',
         '@svgr/plugin-prettier'
