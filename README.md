@@ -1,3 +1,7 @@
+> 🚧 **This project is maintenance mode!** 🚧
+> 
+> I will be fixing and responding to pull requests and issues, but it is not in active development.
+
 ![crypticat](https://raw.githubusercontent.com/kognise/crypticat/master/assets/main-banner.png)
 
 <center><em>Crypticat is a very minimal end-to-end encrypted chat protocol/platform with emphasis on ease of usability.</em></center>
